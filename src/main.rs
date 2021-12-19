@@ -4,6 +4,7 @@ mod tagmasks;
 mod enums;
 mod consts;
 mod drawable;
+mod config;
 
 // Usings
 use std::env;
@@ -29,13 +30,17 @@ fn setup() {
     let screen_width = DisplayWidth(display, screen);
     let screen_height = DisplayHeight(display, screen);
     let root = RootWindow(display, screen);
-    let drawable = create_drawable(display, screen, root, screen_width, screen_height); // drw_create
+    let drawable = drawable::MyDrawable::new(display, screen, root, screen_width, screen_height); // drw_create
 
-    if !create_drawable_fontset(drawable, fonts, fonts.len()) {
+    let font = drawable::Font::new(&drawable, 
+                                   config::FONTS); // not sure why this error is turning up
+    if font.is_none() {
         die!("no fonts could be loaded.");
-    }
+    } 
+    let font = font.unwrap();
 
-    let lrpad = drawable->fonts->height; // TODO
+
+    let lrpad = drawable.fonts.height; // TODO: make these public
 
     let bh = drawable->fonts->height + 2; // TODO
     updategeom(); // TODO
