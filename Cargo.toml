@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 die = "0.2"
+x11 = "2.19.1"
