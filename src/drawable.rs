@@ -1,4 +1,4 @@
-use x11::{xft::XftColor, xlib::Drawable};
+use x11::{xft::XftColor, xlib::{Drawable, XCreatePixmap, XCreateGC, XSetLineAttributes, LineSolid, CapButt, JoinMiter, XFreePixmap}};
 
 // TODO: I reckon this is unnecessary - is typedef struct { Cursor c; } Cur; 
 // in C equivalent.
@@ -29,6 +29,10 @@ impl Font {
     /// Option<> here is more Rust-ic.
     pub fn new(drawable: &MyDrawable, fonts: Vec<&str>) -> Option<Font> {
         todo!();
+
+        let current: Option<Font> = None;
+        let ret: Option<Font> = None;
+        let i: usize = 0;
     }
 
     /// From C dwm drw_fontset_getwidth function.
@@ -56,6 +60,8 @@ enum ColorSchemeIndex {
 type Color = XftColor; // TODO; C name: Clr
 
 /// Name is temporary, to avoid collision with x11::xlib::Drawable.
+/// colorscheme and fonts members are optional as they are not set in 
+/// the drw_create function in C.
 pub struct MyDrawable {
     width: usize,
     height: usize,
@@ -64,8 +70,8 @@ pub struct MyDrawable {
     root: Window, // TODO
     drawable: x11::xlib::Drawable, // TODO make sure no name clash
     gc: GC, // TODO: what is this?
-    colorscheme: Color, // TODO is ptr in C
-    fonts: Font, // TODO: is ptr in C
+    colorscheme: Option<Color>, // TODO is ptr in C
+    fonts: Option<Font>, // TODO: is ptr in C
 }
 
 impl MyDrawable {
@@ -73,11 +79,46 @@ impl MyDrawable {
     // Also, why is screen an i32? 
     pub fn new(display: &Display, 
                screen: i32, 
+               root: Window,
                window: &Window, 
                width: usize, 
                height: usize) -> MyDrawable {
+        let ret = MyDrawable {
+            display: display,
+            screen: screen,
+            root: root,
+            width: width,
+            height: height,
+            drawable: unsafe {
+                XCreatePixmap(display, root, width, height, DefaultDepth(display, screen))
+            },
+            gc: unsafe { XCreateGC(display, root, 0, 0) }, // last param is NULL in C version
+            colorscheme: None,
+            fonts: None,
+        };
+        unsafe {
+            XSetLineAttributes(display, drawable.gc, 1, LineSolid, CapButt, JoinMiter);
+        }
 
-        todo!();
+        ret
+    }
+
+    /// Equivalent of C function drw_resize in drw.c.
+    fn resize(&mut self, width: usize, height: usize) {
+        /* C version returns if (!drw) - I think we can miss this as we know
+         * it is not null if this function is called.
+         */
+        
+        self.width = width;
+        self.height = height;
+
+        // Clear drawable (likely needs freeing) and replace it
+        XFreePixmap(self.display, self.drawable);
+        self.drawable = XCreatePixmap() // TODO: fill out the parameters here
+        
+
+
+
     }
 }
 
