@@ -36,7 +36,6 @@ impl Font {
     }
 
     /// From C dwm drw_fontset_getwidth function.
-    // TODO: consider using usize not u32? Perhaps better for width.
     fn width(&self, text: &str) -> u32 {
         todo!();
     }
@@ -45,8 +44,7 @@ impl Font {
     // Params: Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h
     // what strikes me is mutable access to Fnt (hence &mut self), len as 
     // unsigned int not usize_t, and mutable pointers to w and h 
-    // I have changed width / height from u32 to usize for consistency
-    fn get_exts(&mut self, text: &str, u32 len, width: usize, height: usize) {
+    fn get_exts(&mut self, text: &str, u32 len, width: u32, height: u32) {
         todo!();
     }
 }
@@ -63,8 +61,8 @@ type Color = XftColor; // TODO; C name: Clr
 /// colorscheme and fonts members are optional as they are not set in 
 /// the drw_create function in C.
 pub struct MyDrawable {
-    width: usize,
-    height: usize,
+    width: u32,
+    height: u32,
     display: *Display, // TODO
     screen: i32,       // see impl block
     root: Window, // TODO
@@ -81,8 +79,8 @@ impl MyDrawable {
                screen: i32, 
                root: Window,
                window: &Window, 
-               width: usize, 
-               height: usize) -> MyDrawable {
+               width: u32, 
+               height: u32) -> MyDrawable {
         let ret = MyDrawable {
             display: display,
             screen: screen,
@@ -104,7 +102,7 @@ impl MyDrawable {
     }
 
     /// Equivalent of C function drw_resize in drw.c.
-    fn resize(&mut self, width: usize, height: usize) {
+    fn resize(&mut self, width: u32, height: u32) {
         /* C version returns if (!drw) - I think we can miss this as we know
          * it is not null if this function is called.
          */
