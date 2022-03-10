@@ -1,12 +1,5 @@
 /* All configurations can be changed here to fit your preferences. */
-
-// TODO: move this into its own file 
-enum BarPosition {
-    Top,
-    Bottom,
-}
-
-
+use crate::enums::{BarPosition};
 
 
 // Appearance
