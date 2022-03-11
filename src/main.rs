@@ -42,7 +42,7 @@ fn setup() {
 
     let lrpad = drawable.fonts.height; // TODO: make these public
 
-    let bh = drawable->fonts->height + 2; // TODO
+    let bar_height = drawable->fonts->height + 2; // will not make global but instead pass to every func that needs it
     updategeom(); // TODO
 
     /* init atoms */
@@ -79,6 +79,12 @@ fn main() {
     }
 
     #[cfg(target_os="openbsd")]
+    if pledge("stdio rpath proc exec", NULL) == -1) {
+        die!("pledge");
+    }
+
+
+
     {
         display = open_display(NULL); // TODO: use C NULL
         if display.is_none() { // TODO: figure out 
