@@ -1,4 +1,4 @@
-struct Monitor {
+pub struct Monitor {
     ltsymbol: String,
     mfact: f32,
     nmaster: i32,
@@ -45,11 +45,7 @@ impl Monitor {
             self.bar_y = -bar_height;
         }
     }
-
-
-
-
-
-
-
 }
+
+impl Drop for Monitor {
+
