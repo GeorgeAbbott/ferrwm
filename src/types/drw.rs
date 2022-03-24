@@ -38,6 +38,68 @@ impl Drw {
         self.drawable = Some(Drawable::new(&self.display, self.root, 
                 width, height, DefaultDepth(todo!())));
     }
+
+    // TODO: should this pass off onto Fnt::new in some way?
+    // Equivalent to C dwm function: drw_fontset_create() in drw.c
+    // TODO: change &Vec<String> to a better borrowed type?
+    // Believe the third param, size_t fontcount not needed as size 
+    // can be gotten
+    // TODO: does this need to return *Fnt or &Fnt? cant it just assign the
+    // font within the type? if so, can I call this in constructor?
+    fn create_fontset(&mut self, fonts: &Vec<String>) -> Fnt {
+        if fonts.size() == 0 { return; } // TODO: find better control flow
+
+        todo!();
+        // I believe here is reverse iterating over fonts and trying to 
+        // call xfont_create on them? 
+        
+        // todo: figure out what that return statement here means
+    }
+
+    // See notes under ref dir. Not sure whether this should go here, 
+    // like create_fontset(), but putting here for now.
+    // Assuming by name that dest is the out param?
+    // if so, consider making it return instead
+    // TODO as per notes below move this into body of create_scheme
+    fn create_color(&mut self, dest: &mut Clr, colorname: &str) {
+        todo!();
+    }
+    
+    // Returns an Option<Clr>, as C func can return null ref.
+    // Mutability of this method needs only to be as much as 
+    // create_color() - if this ends up w immut ref then this 
+    // can take immut ref as well.
+    // TODO: replace &Vec<> with borrowed type
+    // TODO: not having clrcount is assuming that this is just colornames.len?
+    //
+    // NOTE: this function is only called in one place: dwm.c#setup(),
+    // where it is called scheme[i] = drw_scm_create(drw, colors[i], 3);
+    // hence, erroring on a colornames < 2 is never going to happen right? 
+    // TODO: find whatever code in setup() that guarantees that size > 3 
+    // so it can just be passed into the func so easily
+    fn create_scheme(&mut self, colornames: &Vec<String>) -> Option<Clr> {
+        if colornames.len() < 2 {
+            return None; 
+        }
+
+        todo!(); 
+        // TODO this part here creates using drw_clr_create, using ret and 
+        // an index as an out param
+        // hence, do we want dest as an out param or do we want to return it 
+        // to have ownership of it? imo take ownership
+        // also, if it creates with an index and a for loop, see where else 
+        // drw_clr_create is called, if only here we might as well just put 
+        // the looping code inside the create_color func altogether, and just
+        // return a Vec<Clr>
+        // maybe even just move func body into here to simplify
+        // NOTE: I just checked a bit and afaict it is only called in this 
+        // one function, so I guess I either make it priv method or just move 
+        // it into this one 
+        // probably easier to just move it into the body
+    }
+
+
+
 }
 
 impl Drop for Drw {
