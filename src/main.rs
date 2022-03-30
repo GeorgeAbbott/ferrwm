@@ -48,9 +48,6 @@ fn setup() {
     /* init atoms */
     todo!();
 
-
-
-
 }
 
 fn scan() {
@@ -78,8 +75,7 @@ fn main() {
         todo!();
     }
 
-    #[cfg(target_os="openbsd")]
-    if pledge("stdio rpath proc exec", NULL) == -1) {
+    if cfg!(openbsd) && pledge("stdio rpath proc exec", NULL) == -1 {
         die!("pledge");
     }
 
