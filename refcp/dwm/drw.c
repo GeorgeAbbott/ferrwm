@@ -241,6 +241,7 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
 	return ret;
 }
 
+// -> Drw::set_fontset(&mut self, set: Fnt)
 void
 drw_setfontset(Drw *drw, Fnt *set)
 {
@@ -248,6 +249,7 @@ drw_setfontset(Drw *drw, Fnt *set)
 		drw->fonts = set;
 }
 
+// -> Drw::set_scheme(&mut self, scm: Clr)
 void
 drw_setscheme(Drw *drw, Clr *scm)
 {
@@ -255,6 +257,8 @@ drw_setscheme(Drw *drw, Clr *scm)
 		drw->scheme = scm;
 }
 
+// -> Drw::rect(&self, ...)
+// AFAICT no need for mut ref to self.
 void
 drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert)
 {
@@ -267,6 +271,8 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
 }
 
+// -> Drw::text(&self, ...)
+// TODO: read, implement + check if needs mut self
 int
 drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert)
 {
@@ -416,6 +422,8 @@ drw_fontset_getwidth(Drw *drw, const char *text)
 	return drw_text(drw, 0, 0, 0, 0, 0, text, 0);
 }
 
+// -> Fnt::get_exts(&self, text: &str) -> (u32, u32)
+// TODO: verify this is good signature
 void
 drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h)
 {
@@ -431,6 +439,8 @@ drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w,
 		*h = font->h;
 }
 
+// TODO: do I put this under Cur::new()? Or Drw::make_cursor()?
+// Not sure... same for all these dependent types
 Cur *
 drw_cur_create(Drw *drw, int shape)
 {

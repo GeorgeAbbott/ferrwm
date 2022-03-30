@@ -12,6 +12,12 @@ impl Fnt {
             todo!();
         }
     }
+
+    fn get_exts(&self, text: &str) -> (u32, u32) {
+        // create uninitialised XGlyphInfo ext here
+        
+        todo!();
+    }
 }
 
 impl Drop for Fnt {

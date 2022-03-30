@@ -10,6 +10,7 @@ pub struct Drw {
     fonts: &Fnt,
 }
 
+
 impl Drw {
     pub fn new(display: &Display, 
                screen:  i32,
@@ -97,6 +98,58 @@ impl Drw {
         // it into this one 
         // probably easier to just move it into the body
     }
+
+    fn set_fontset(&mut self, set: Fnt) {
+        self.fonts = set;
+    }
+
+    fn set_scheme(&mut self, scm: Clr) { 
+        self.scheme = scm;
+    }
+
+    // TODO: this function should be largely ok but might still
+    // error for something
+    fn rect(&self, x: i32, y: i32, 
+        w: u32, h: u32, filled: bool, invert: bool) {
+
+        // What to use 
+        let col_ground = if invert { ColBg } else { ColFg };
+        
+        if self.scheme.is_none() // do I need a check like this?
+                // how will I assert that drw->scheme is Some? 
+                // will it be assigned at initialisation so always
+                // be Some?
+        { todo!(); }
+
+        unsafe {
+            XSetForeground(self.display, self.gc, 
+                drw.scheme[col_ground].pixel);
+
+            if filled {
+                XFillRectangle(self.display, self.drawable, self.gc, 
+                    x, y, w, h);
+            } else {
+                XDrawRectangle(self.display, self.drawable, self.gc,
+                    x, y, w - 1, h - 1);
+            }
+        }
+    }
+
+    // TODO: C accepts Window as copy, but should we copy? Or 
+    // #derive[Copy] for Window? Or allow to move / use reference?
+    fn map(&self, win: Window, x: i32, y: i32, w: u32, h: u32) { 
+        unsafe {
+            XCopyArea(self.display, self.drawable, win, self.gc,
+                x, y, w, h, x, y);
+
+            // C call has False - is this a typedef int? Use 0 for now FIXME
+            XSync(self.display, 0);
+        }
+    }
+
+
+                
+
 
 
 
