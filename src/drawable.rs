@@ -1,5 +1,11 @@
 use x11::{xft::XftColor, xlib::{Drawable, XCreatePixmap, XCreateGC, XSetLineAttributes, LineSolid, CapButt, JoinMiter, XFreePixmap}};
 
+////////////////////////////
+// Believe this file is duplicate of better implemented 
+// ./types/drw.rs
+// TODO delete or merge
+
+
 // TODO: I reckon this is unnecessary - is typedef struct { Cursor c; } Cur; 
 // in C equivalent.
 pub struct Cursor { 
