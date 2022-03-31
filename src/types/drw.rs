@@ -1,4 +1,6 @@
 // TODO: sort out the names here of types
+// TODO: should this not also contain root: Window ?? 
+// as ctor ::new has it, yet I take it 
 pub struct Drw {
     width: u32,
     height: u32,
@@ -6,12 +8,16 @@ pub struct Drw {
     screen: i32,
     drawable: Option<Drawable>, // TODO: ref to?
     gc: GC, // ???
-    scheme: &Clr,
-    fonts: &Fnt,
+    scheme: Option<Clr>, // Assuming scheme should be option as AFAICT
+                         // may be null in some functions, e.g. ::text()
+                         // But should this be Option<&Clr>?
+    fonts: Option<Fnt>,
 }
 
 
 impl Drw {
+    // drawable ctor which appears to be dupl contains root:Window  &
+    // window: &Window - is this mistake? If not add to this new() fn
     pub fn new(display: &Display, 
                screen:  i32,
                root:    Window,
@@ -22,6 +28,60 @@ impl Drw {
         // be boxed? Also, XCreatePixmap, XCreateGC, XSetLineAttributes
         // will need to be called. 
     }
+
+    // TODO: figure out what this does. Believe renders text then returns
+    // size of text in pixels as i32.
+    // This return may also be an error code, but errors return 0 so 
+    // doesnt make sense like that....
+    // TODO: C here returns 0 if error, e.g. params which might be null
+    // cause error. Shouldnt Rust use Result<> instead?
+    fn text(&str, x: i32, y: i32, 
+        w: u32, h: u32, lpad: u32, text: &str, invert: bool) -> i32 {
+
+        // C: defines a bunch of types here, probably not needed
+        let render = x || y || w || h;
+        let d: Option<const* XftDraw> = None; // This is option as is only set if !render; TODO:
+        // this is a return of a C func so I must manage maybe there is a way to make it easier on
+        // myself and not have to manage this 
+
+
+        // A check for !text exists in C. Does this actually translate
+        // to a len check in Rust? TODO
+        if self.fonts.is_none() || text.len() == 0 || 
+            (render && self.scheme.is_none()) {
+                return 0; // TODO: see comment above. Result<> better??
+        }
+
+        if !render {
+            w = ~w; // TODO: is this Rust syntax?
+        } else { unsafe {
+            XSetForeground(drw.display, drw.gc, 
+                drw.scheme[if invert { ColFg } else { ColBg}].pixel);
+            XFillRectangle(drw.display, drw.drawable, 
+                drw.gc, x, y, w, h);
+            d = Some(XftDrawCreate(
+                    drw.display, drw.drawable, 
+                    DefaultVisual(drw.display, drw.screen), 
+                    DefaultColormap(drw.display, drw.screen)
+            )
+            ); 
+            } // end of unsafe
+
+            x += lpad;
+            w -= lpad; 
+        } // end of else block
+
+        todo!();
+        // TODO rest. Some odd looking for loops etc. that might be 
+        // difficult to implement. 
+
+
+
+
+
+
+
+
 
     fn resize(&mut self, width: u32, height: u32) {
         todo!();
@@ -39,6 +99,20 @@ impl Drw {
         self.drawable = Some(Drawable::new(&self.display, self.root, 
                 width, height, DefaultDepth(todo!())));
     }
+
+    // Get width of string provided; internally calls self::text.
+    // From C fn: drw_fontset_getwidth
+    // BELIEVE_IMPL_COMPLETE
+    fn get_width(&self, text: &str) -> u32 {
+        if text.len() == 0 || self.fonts.is_none() {
+            return 0;
+        }
+
+        return self.text(0, 0, 0, 0, 0, text, false);
+    }
+
+        
+
 
     // TODO: should this pass off onto Fnt::new in some way?
     // Equivalent to C dwm function: drw_fontset_create() in drw.c
