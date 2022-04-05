@@ -5,6 +5,7 @@ mod enums;
 mod consts;
 mod drawable;
 mod config;
+mod types;
 
 // Usings
 use std::env;
@@ -14,6 +15,9 @@ use die::die;
 use x11::xlib::*;
 use x11::keysym::*;
 use x11::*;
+
+/* Wrapper Types */
+use crate::types::display;
 
 fn check_other_wm() {
 }
@@ -81,11 +85,11 @@ fn main() {
 
 
 
-    {
-        display = open_display(NULL); // TODO: use C NULL
-        if display.is_none() { // TODO: figure out 
-            die!("dwm: cannot open display");
-        }
+    // Wrapper type: should not need to manage mem as should
+    // be dealt with by impl
+    let display = Display::new(); // What is the error about _XDisplay?
+    if display.is_none() { 
+        die!("dwm: cannot open display");
     }
 
 
@@ -97,10 +101,5 @@ fn main() {
     scan();
     run();
     // cleanup();
-    unsafe {
-        XCloseDisplay(display);
-    }
-
-
 
 }
