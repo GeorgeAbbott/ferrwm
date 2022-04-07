@@ -1,11 +1,12 @@
 // Modules
-mod structs;
-mod tagmasks;
+// mod structs;
+// mod tagmasks;
 mod enums;
 mod consts;
 mod drawable;
 mod config;
 mod types;
+mod wrapx;
 
 // Usings
 use std::env;
@@ -18,16 +19,17 @@ use x11::*;
 
 /* Wrapper Types */
 use crate::types::display;
+use crate::config;
 
 fn check_other_wm() {
 }
 
-fn setup() {
+fn setup(display: &Display) {
     let window_attributes: x11::xlib::XSetWindowAttributes;
     let atom: x11::xlib::Atom;
 
     /* clean up any zombies immediately */
-    sigchld(0); // TODO: ???
+    // sigchld(0); // TODO: ???
 
     /* init screen */
     let screen = DefaultScreen(display);
@@ -75,13 +77,13 @@ fn main() {
     }
 
     // Error checking
-    if !set_locale(LC_CTYPE, "") || !XSupportsLocale() {
+    if !set_locale(LC_CTYPE, "") || !(crate::wrapx::supports_locale()) {
         todo!();
     }
 
-    if cfg!(openbsd) && pledge("stdio rpath proc exec", NULL) == -1 {
-        die!("pledge");
-    }
+    // if cfg!(openbsd) && pledge("stdio rpath proc exec", NULL) == -1 {
+    //     die!("pledge");
+    // }
 
 
 
@@ -97,7 +99,7 @@ fn main() {
 
     // todo: rest of main
     check_other_wm();
-    setup();
+    setup(display);
     scan();
     run();
     // cleanup();

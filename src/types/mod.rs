@@ -1,5 +1,5 @@
-use monitor;
-use display;
-use drw;
-use font;
-use client;
+mod monitor;
+mod display;
+mod drw;
+mod font;
+mod client;

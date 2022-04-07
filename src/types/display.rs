@@ -1,9 +1,10 @@
 use std::ptr;
 use die::die;
+use x11::xlib::{XOpenDisplay, _XDisplay};
 
 // Owns and wraps XDisplay.
 pub struct Display {
-    inner: const* XDisplay,
+    inner: *mut _XDisplay,
 }
 
 pub impl Display {
