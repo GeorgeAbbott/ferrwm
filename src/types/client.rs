@@ -1,3 +1,5 @@
+use x11::xlib::{XGetWMNormalHints, XSizeHints};
+
 pub struct Client {
 }
 
@@ -13,7 +15,10 @@ impl Client {
 
         // just dip into unsafe for this, also not sure what return type is
         // is it true/false or int or a pointer that we are checking for null?
-        if !XGetWMNormalHints(dpy, c->win, &size, &msize) {
+        if !unsafe { XGetWMNormalHints(dpy, c->win, &size, &msize); } { 
+            // TODO: check return of this line as this might be a null check
+            // I really just surrounded it with unsafe for it to stop erroring
+            // for now.
             todo!();
         }
     }

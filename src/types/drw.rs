@@ -1,3 +1,5 @@
+use x11::xlib::{XSync, XFillRectangle, XDrawRectangle};
+
 // TODO: sort out the names here of types
 // TODO: should this not also contain root: Window ?? 
 // as ctor ::new has it, yet I take it 
@@ -35,7 +37,7 @@ impl Drw {
     // doesnt make sense like that....
     // TODO: C here returns 0 if error, e.g. params which might be null
     // cause error. Shouldnt Rust use Result<> instead?
-    fn text(&str, x: i32, y: i32, 
+    fn text(&self, x: i32, y: i32, 
         w: u32, h: u32, lpad: u32, text: &str, invert: bool) -> i32 {
 
         // C: defines a bunch of types here, probably not needed

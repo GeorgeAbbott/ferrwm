@@ -1,5 +1,7 @@
+use crate::types::display::Display;
+
 pub struct Fnt {
-    display: &Display, // this sure does feel like a multiple mut ref....
+    display: &Display, // If mult mut ref does not matter as only need to get raw ptr
     height: u32,
     xfont: XftFont, // does this need ptr to this?
     pattern: FcPattern, // ^^ 

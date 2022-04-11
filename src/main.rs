@@ -18,8 +18,10 @@ use x11::keysym::*;
 use x11::*;
 
 /* Wrapper Types */
-use crate::types::display;
+use crate::types::display::Display;
 use crate::config;
+use crate::xwrap::{supports_locale};
+
 
 fn check_other_wm() {
 }
@@ -48,7 +50,7 @@ fn setup(display: &Display) {
 
     let lrpad = drawable.fonts.height; // TODO: make these public
 
-    let bar_height = drawable->fonts->height + 2; // will not make global but instead pass to every func that needs it
+    let bar_height = drawable.fonts.height + 2; // will not make global but instead pass to every func that needs it
     updategeom(); // TODO
 
     /* init atoms */
@@ -77,7 +79,7 @@ fn main() {
     }
 
     // Error checking
-    if !set_locale(LC_CTYPE, "") || !(crate::wrapx::supports_locale()) {
+    if !set_locale(LC_CTYPE, "") || !(supports_locale()) { // TODO: set_locale
         todo!();
     }
 
