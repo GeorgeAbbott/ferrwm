@@ -153,6 +153,33 @@ impl Drw {
         // todo: figure out what that return statement here means
     }
 
+    // Equivalent of drw_clr_create, called only in drw_scm_create
+    // We know XftColor will be initialised, as if it is not then 
+    // XftColorAllocName will return an error value and the program will
+    // die.
+    // Since XftColor is a C type, can I just return it free of reference
+    // like this? How is it managed? 
+    fn create_colour(&self, clrname: &str) -> XftColor {
+        if clrname.len() == 0 { return None; }
+
+        let mut dest = MaybeUninit<XftColor>::uninit();
+
+        unsafe { 
+            // TODO: add function to get mut ref to these displays
+            match XftColorAllocName(
+                self.display
+                DefaultVisual(self.display, self.screen),
+                DefaultColormap(self.display, self.screen),
+                clrname as *[u8], // TODO convert to const char*
+                dest.as_mut_ptr()
+            ) as bool {
+                false => { die!("error, cannot allocate color {}", clrname); }
+                true  => dest.assume_init()
+            };
+        }
+    }
+
+
     // Returns an Option<Clr>, as C func can return null ref.
     // Mutability of this method needs only to be as much as 
     // create_color() - if this ends up w immut ref then this 
@@ -165,57 +192,18 @@ impl Drw {
     // hence, erroring on a colornames < 2 is never going to happen right? 
     // TODO: find whatever code in setup() that guarantees that size > 3 
     // so it can just be passed into the func so easily
-    fn create_scheme(&mut self, colornames: &Vec<String>) -> Option<Clr> {
-        // Equivalent of drw_clr_create, called only in drw_scm_create
-        // We know XftColor will be initialised, as if it is not then 
-        // XftColorAllocName will return an error value and the program will
-        // die.
-        // Since XftColor is a C type, can I just return it free of reference
-        // like this? How is it managed? 
-        fn create_colour(&self, clrname: &str) -> XftColor {
-            if clrname.len() == 0 { return None; }
-
-            let mut dest = MaybeUninit<XftColor>::uninit();
-
-            unsafe { 
-                // TODO: add function to get mut ref to these displays
-                match XftColorAllocName(
-                    self.display
-                    DefaultVisual(self.display, self.screen),
-                    DefaultColormap(self.display, self.screen),
-                    clrname as *[u8], // TODO convert to const char*
-                    dest.as_mut_ptr()
-                ) as bool {
-                    false => { die!("error, cannot allocate color {}", clrname); }
-                    true  => dest.assume_init()
-                };
-            }
-        }
-
-
-
-
-
-
-        }
+    fn create_scheme(&mut self, colornames: &[String]) -> Option<Clr> {
         if colornames.len() < 2 {
             return None; 
         }
 
+        // TODO: when this is figured out, implement.
+        for i in 0..=colornames.len() {
+            todo!();
+        }
+
+
         todo!(); 
-        // TODO this part here creates using drw_clr_create, using ret and 
-        // an index as an out param
-        // hence, do we want dest as an out param or do we want to return it 
-        // to have ownership of it? imo take ownership
-        // also, if it creates with an index and a for loop, see where else 
-        // drw_clr_create is called, if only here we might as well just put 
-        // the looping code inside the create_color func altogether, and just
-        // return a Vec<Clr>
-        // maybe even just move func body into here to simplify
-        // NOTE: I just checked a bit and afaict it is only called in this 
-        // one function, so I guess I either make it priv method or just move 
-        // it into this one 
-        // probably easier to just move it into the body
     }
 
     fn set_fontset(&mut self, set: Fnt) {
