@@ -13,12 +13,16 @@ pub struct Drw {
                         // each refers to the same display? 
     screen: i32,
     drawable: Option<Drawable>, 
-    gc: Gc, // ??? maybe just own this raw pointer
+    gc: Gc, // TODO GC is only used in Drw, so use a raw ptr
     scheme: Option<Clr>, // Assuming scheme should be option as AFAICT
                          // may be null in some functions, e.g. ::text()
                          // But should this be Option<&Clr>?
                          // Believe should own: see set_scheme(). 
                          // As such, Option<Clr> preferred.
+                         // If Clr is just XftColor, I have to decide whether 
+                         // to own this (either as a messy raw ptr or wrapped
+                         // nicely...) or not. I say learn how Clr and Scm 
+                         // interact, then decide whether to wrap it...
     fonts: Option<Fnt>,
 }
 
@@ -166,7 +170,9 @@ impl Drw {
         // We know XftColor will be initialised, as if it is not then 
         // XftColorAllocName will return an error value and the program will
         // die.
-        fn create_colour(&self, clrname: &str) -> *mut XftColor {
+        // Since XftColor is a C type, can I just return it free of reference
+        // like this? How is it managed? 
+        fn create_colour(&self, clrname: &str) -> XftColor {
             if clrname.len() == 0 { return None; }
 
             let mut dest = MaybeUninit<XftColor>::uninit();
@@ -184,8 +190,6 @@ impl Drw {
                     true  => dest.assume_init()
                 };
             }
-
-
         }
 
 
