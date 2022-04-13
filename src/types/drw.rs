@@ -149,15 +149,6 @@ impl Drw {
         // todo: figure out what that return statement here means
     }
 
-    // See notes under ref dir. Not sure whether this should go here, 
-    // like create_fontset(), but putting here for now.
-    // Assuming by name that dest is the out param?
-    // if so, consider making it return instead
-    // TODO as per notes below move this into body of create_scheme
-    fn create_color(&mut self, dest: &mut Clr, colorname: &str) {
-        todo!();
-    }
-    
     // Returns an Option<Clr>, as C func can return null ref.
     // Mutability of this method needs only to be as much as 
     // create_color() - if this ends up w immut ref then this 
@@ -172,25 +163,29 @@ impl Drw {
     // so it can just be passed into the func so easily
     fn create_scheme(&mut self, colornames: &Vec<String>) -> Option<Clr> {
         // Equivalent of drw_clr_create, called only in drw_scm_create
-        // NOTE: Clr is nothing more than an alias of XftColor
-        // C function has Clr *dest as out param
-        fn create_colour(&self, clrname: &str) -> Result<Clr> {
+        // We know XftColor will be initialised, as if it is not then 
+        // XftColorAllocName will return an error value and the program will
+        // die.
+        fn create_colour(&self, clrname: &str) -> *mut XftColor {
             if clrname.len() == 0 { return None; }
 
             let mut dest = MaybeUninit<XftColor>::uninit();
+
             unsafe { 
-                // TODO: add function to get mut ref to these
-                let retval = XftColorAllocName(
+                // TODO: add function to get mut ref to these displays
+                match XftColorAllocName(
                     self.display
                     DefaultVisual(self.display, self.screen),
                     DefaultColormap(self.display, self.screen),
                     clrname as *[u8], // TODO convert to const char*
                     dest.as_mut_ptr()
-                ) as bool;
+                ) as bool {
+                    false => { die!("error, cannot allocate color {}", clrname); }
+                    true  => dest.assume_init()
+                };
             }
-            if !retval {
-                die!("error, cannot allocate color {}", clrname);
-            }
+
+
         }
 
 
