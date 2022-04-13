@@ -75,6 +75,8 @@ drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h
 	drw->w = w;
 	drw->h = h;
 	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
+    // GC is only used in drw_ functions so can be owned by drw without
+    // needing a separate object
 	drw->gc = XCreateGC(dpy, root, 0, NULL);
 	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
 
@@ -223,7 +225,7 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
 }
 
 
-// 
+// -> Drw::create_scheme() at least for now...
 /* Wrapper to create color schemes. The caller has to call free(3) on the
  * returned color scheme when done using it. */
 Clr *

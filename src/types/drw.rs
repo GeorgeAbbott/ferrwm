@@ -1,4 +1,7 @@
 use x11::xlib::{XSync, XFillRectangle, XDrawRectangle};
+use x11::xft::XftColorAllocName;
+use crate::consts::{COLBG, COLFG, COLBORDER};
+use std::mem::MaybeUninit;
 
 // TODO: sort out the names here of types
 // TODO: should this not also contain root: Window ?? 
@@ -6,13 +9,16 @@ use x11::xlib::{XSync, XFillRectangle, XDrawRectangle};
 pub struct Drw {
     width: u32,
     height: u32,
-    display: &Display,
+    display: &Display,  // why ref to? I imagine drw is made many times and
+                        // each refers to the same display? 
     screen: i32,
-    drawable: Option<Drawable>, // TODO: ref to?
-    gc: GC, // ???
+    drawable: Option<Drawable>, 
+    gc: Gc, // ??? maybe just own this raw pointer
     scheme: Option<Clr>, // Assuming scheme should be option as AFAICT
                          // may be null in some functions, e.g. ::text()
                          // But should this be Option<&Clr>?
+                         // Believe should own: see set_scheme(). 
+                         // As such, Option<Clr> preferred.
     fonts: Option<Fnt>,
 }
 
@@ -20,12 +26,22 @@ pub struct Drw {
 impl Drw {
     // drawable ctor which appears to be dupl contains root:Window  &
     // window: &Window - is this mistake? If not add to this new() fn
-    pub fn new(display: &Display, 
+    pub fn new(display: &Display, // see struct def - why ref to? 
                screen:  i32,
                root:    Window,
                width:   u32,
                height:  u32) -> Self {
         todo!();
+        Self {
+            width: width,
+            height: height,
+            display: display, 
+            screen: screen,
+            drawable: Drawable::new(); 
+            gc: Gc::new(),
+            scheme: None, 
+        }
+
         // This will need to call ecalloc so maybe it needs to 
         // be boxed? Also, XCreatePixmap, XCreateGC, XSetLineAttributes
         // will need to be called. 
@@ -38,7 +54,7 @@ impl Drw {
     // TODO: C here returns 0 if error, e.g. params which might be null
     // cause error. Shouldnt Rust use Result<> instead?
     fn text(&self, x: i32, y: i32, 
-        w: u32, h: u32, lpad: u32, text: &str, invert: bool) -> i32 {
+        w: u32, h: u32, lpad: u32, text: &str, invert: bool) -> Result<i32, ()> {
 
         // C: defines a bunch of types here, probably not needed
         let render = x || y || w || h;
@@ -51,14 +67,14 @@ impl Drw {
         // to a len check in Rust? TODO
         if self.fonts.is_none() || text.len() == 0 || 
             (render && self.scheme.is_none()) {
-                return 0; // TODO: see comment above. Result<> better??
+                return Err(()); 
         }
 
         if !render {
             w = ~w; // TODO: is this Rust syntax?
         } else { unsafe {
             XSetForeground(drw.display, drw.gc, 
-                drw.scheme[if invert { ColFg } else { ColBg}].pixel);
+                drw.scheme[if invert { COLFG } else { COLBG }].pixel);
             XFillRectangle(drw.display, drw.drawable, 
                 drw.gc, x, y, w, h);
             d = Some(XftDrawCreate(
@@ -155,6 +171,34 @@ impl Drw {
     // TODO: find whatever code in setup() that guarantees that size > 3 
     // so it can just be passed into the func so easily
     fn create_scheme(&mut self, colornames: &Vec<String>) -> Option<Clr> {
+        // Equivalent of drw_clr_create, called only in drw_scm_create
+        // NOTE: Clr is nothing more than an alias of XftColor
+        // C function has Clr *dest as out param
+        fn create_colour(&self, clrname: &str) -> Result<Clr> {
+            if clrname.len() == 0 { return None; }
+
+            let mut dest = MaybeUninit<XftColor>::uninit();
+            unsafe { 
+                // TODO: add function to get mut ref to these
+                let retval = XftColorAllocName(
+                    self.display
+                    DefaultVisual(self.display, self.screen),
+                    DefaultColormap(self.display, self.screen),
+                    clrname as *[u8], // TODO convert to const char*
+                    dest.as_mut_ptr()
+                ) as bool;
+            }
+            if !retval {
+                die!("error, cannot allocate color {}", clrname);
+            }
+        }
+
+
+
+
+
+
+        }
         if colornames.len() < 2 {
             return None; 
         }
@@ -176,11 +220,11 @@ impl Drw {
     }
 
     fn set_fontset(&mut self, set: Fnt) {
-        self.fonts = set;
+        self.fonts = Some(set);
     }
 
     fn set_scheme(&mut self, scm: Clr) { 
-        self.scheme = scm;
+        self.scheme = Some(scm);
     }
 
     // TODO: this function should be largely ok but might still
@@ -189,7 +233,7 @@ impl Drw {
         w: u32, h: u32, filled: bool, invert: bool) {
 
         // What to use 
-        let col_ground = if invert { ColBg } else { ColFg };
+        let ground = if invert { COLBG } else { COLFG };
         
         if self.scheme.is_none() // do I need a check like this?
                 // how will I assert that drw->scheme is Some? 
@@ -198,8 +242,9 @@ impl Drw {
         { todo!(); }
 
         unsafe {
+            // TODO: likely need to add .as_raw() to display
             XSetForeground(self.display, self.gc, 
-                drw.scheme[col_ground].pixel);
+                drw.scheme[ground].pixel);
 
             if filled {
                 XFillRectangle(self.display, self.drawable, self.gc, 
