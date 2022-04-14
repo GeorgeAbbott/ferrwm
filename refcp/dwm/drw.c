@@ -226,8 +226,17 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
 
 
 // -> Drw::create_scheme() at least for now...
+// scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
+// for (i = 0; i < LENGTH(colors); i++)
+// scheme[i] = drw_scm_create(drw, colors[i], 3)
 /* Wrapper to create color schemes. The caller has to call free(3) on the
  * returned color scheme when done using it. */
+// This is returning a ret, which is an array of three colors. 
+// This method allocates mem for ret with ecalloc and 
+// create_scheme(&self, clrnames: &[String]) -> Result<&[Clr, N], ()>
+// where N is the same as clrcount and equal to the size of COLORS
+// array.
+// This should return owned, I think. 
 Clr *
 drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
 {

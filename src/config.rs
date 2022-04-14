@@ -12,7 +12,12 @@ pub const BAR_POSITION: BarPosition = BarPosition::Top;
 pub const FONTS: &[&str]            = &["Liberation Mono:size=11"];
 pub const DMENU_FONT: &str          = "Liberation Mono;size=11";
 
-//pub const COLORS: &[&[&str]] =
+pub const NUM_COLOR: i32            = 3; // DO NOT CHANGE
+pub const COLORS: &[&[&str; NUM_COLOR]] =
+    [    /* foreground   background   border    */
+         [  "#ffffff",   "#000000",   "#000000"  ],
+         // TODO add further elements... 
+    ];
 
 pub const TAGS: &[&str] = 
 &[ 

@@ -1,2 +1,27 @@
 CHECK
     Window - is this an X type?
+
+For drw_scm_create
+    In dwm.c an array is created to hold the scheme, and what drw_scm_create
+    does is creates a ret, of size of three XftColors, and calls clr_create
+    for each of these. 
+
+    clr_create  -> create an Xft
+    scm_create  -> For (fg,bg,border) creates Xfts for each by calling 
+                   clr_create, then returns this array of 3. 
+
+
+    dwm         -> allocates space for LENGTH(colors) * sizeof(Clr*)
+                   then creates a list of schemes, where each scheme
+                   created is done by passing in clrnames for that 
+                   element (where clrnames is a list of 3, and iterated
+                   over in scm_create to call clr_create on each of those.
+
+    In Rust:
+        create_color    fn (&self, clrnames: &[String]) -> Result<Clr>
+        create_scheme   fn (&self, clrnames: &[String]) -> Result<&[Clr]>
+
+    In dwm then, the return from create_scheme can be assigned to the 
+    relevant position in scheme variable which will be array of arrays of 
+    XftColor (as multiple schemes and each scheme is 3 colors).
+
