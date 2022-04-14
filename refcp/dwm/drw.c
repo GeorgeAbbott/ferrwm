@@ -247,6 +247,15 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
 	if (!drw || !clrnames || clrcount < 2 || !(ret = ecalloc(clrcount, sizeof(XftColor))))
 		return NULL;
 
+    /* 
+     * TODO I just don't understand this function. &ret[i] means it indexes
+     * into XftColor... which holds a long and a XRenderColor (which is just
+     * RGBA as shorts) then gets the reference of what is a long and struct of 
+     * shorts and sends that to a function expecting a Clr *dest... this can't 
+     * be right. But the alternative is that this is actually returning 
+     * something like a Clr** e.g. a list of clr ptrs ... not sure at all.
+     * Maybe it's a late night. TODO figure this out.
+     */
 	for (i = 0; i < clrcount; i++)
 		drw_clr_create(drw, &ret[i], clrnames[i]);
 	return ret;
