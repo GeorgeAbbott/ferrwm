@@ -1,6 +1,36 @@
 use x11::xlib::{XGetWMNormalHints, XSizeHints};
 
 pub struct Client {
+    name: String, // TODO: double check should be owned
+    min_a: f32, 
+    max_a: f32, 
+    xy: (i32, i32),
+    wh: (i32, i32),
+    oldxy: (i32, i32),
+    oldwh: (i32, i32),
+    basewh: (i32, i32),
+    incwh: (i32, i32),
+    maxwh: (i32, i32),
+    minwh: (i32, i32), 
+    bw: i32, oldbw: i32, // TODO: what is bw?
+    tags: u32, // TODO: Potentially choose something cleaner as bitwise is ugly.
+    
+    // Statuses
+    isfixed: bool,
+    isfloating: bool,
+    isurgent: bool,
+    neverfocus: bool,
+    oldstate: bool // TODO: is this actually a bool? Check dwm prev versions to confirm.
+    isfullscreen: bool,
+
+    next: Box<Client>,
+    snext: Box<Client>, // TODO: what is snext?
+
+    monitor: Monitor,  // Monitor* type, should I use ref for this? 
+    window: Window,   // Window type, not ptr in C
+
+
+
 }
 
 impl Client {
