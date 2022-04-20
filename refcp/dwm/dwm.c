@@ -791,6 +791,8 @@ getstate(Window w)
 	return result;
 }
 
+// get_text_property(w: Window, atom: x11::Atom, text: &str) -> Result<()>
+// LESS_PRIORITY_TEXT
 int
 gettextprop(Window w, Atom atom, char *text, unsigned int size)
 {
@@ -1866,6 +1868,7 @@ updatesizehints(Client *c)
 	c->isfixed = (c->maxw && c->maxh && c->maxw == c->minw && c->maxh == c->minh);
 }
 
+// LESS_PRIORITY_TEXT
 void
 updatestatus(void)
 {
@@ -1874,6 +1877,7 @@ updatestatus(void)
 	drawbar(selmon);
 }
 
+// LESS_PRIORITY_TEXT
 void
 updatetitle(Client *c)
 {
