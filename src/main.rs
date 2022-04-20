@@ -38,10 +38,10 @@ fn setup(display: &Display) {
     let screen_width = DisplayWidth(display, screen);
     let screen_height = DisplayHeight(display, screen);
     let root = RootWindow(display, screen);
-    let drawable = drawable::MyDrawable::new(display, screen, root, screen_width, screen_height); // drw_create
+    let drawable = drawable::MyDrawable::new(display, screen, root, screen_width, screen_height); // TODO: replace with Drw::new
 
     let font = drawable::Font::new(&drawable, 
-                                   config::FONTS); // not sure why this error is turning up
+                                   config::FONTS); // TODO: replace w/ Fnt::new
     if font.is_none() {
         die!("no fonts could be loaded.");
     } 
