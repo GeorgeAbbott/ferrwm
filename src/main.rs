@@ -19,6 +19,8 @@ use x11::*;
 
 /* Wrapper Types */
 use crate::types::display::Display;
+use crate::types::fnt::Fnt;
+use crate::types::drw::Drw;
 use crate::config;
 use crate::xwrap::{supports_locale};
 
