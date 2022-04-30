@@ -11,18 +11,21 @@ mod wrapx;
 // Usings
 use std::env;
 use die::die;
+use openbsd::pledge;
 
 /* X11 */
-use x11::xlib::*;
-use x11::keysym::*;
-use x11::*;
+// use x11::xlib::*;
+// use x11::keysym::*;
+// use x11::*;
+use x11rb;
+
 
 /* Wrapper Types */
 use crate::types::display::Display;
 use crate::types::fnt::Fnt;
 use crate::types::drw::Drw;
 use crate::config;
-use crate::xwrap::{supports_locale};
+use crate::xwrap::supports_locale;
 
 
 fn check_other_wm() {
@@ -31,6 +34,7 @@ fn check_other_wm() {
 fn setup(display: &Display) {
     let window_attributes: x11::xlib::XSetWindowAttributes;
     let atom: x11::xlib::Atom;
+
 
     /* clean up any zombies immediately */
     // sigchld(0); // TODO: ???
@@ -54,8 +58,7 @@ fn setup(display: &Display) {
 
     let bar_height = drawable.fonts.height + 2; // will not make global but instead pass to every func that needs it
     updategeom(); // TODO
-                  
-
+    
     /* init atoms */
     todo!();
 
@@ -76,28 +79,20 @@ fn main() {
     
     if argc == 2 && argv[1] != "-v" {
         die!("riodwm-{}", consts::VERSION);
+    } else if argc != 1 {
+        die!("usage: riodwm [-v]");
     }
-    else if argc != 1 {
-        die!("usage: dwm [-v]");
+    // TODO: add error checking for locale
+
+    if cfg!(openbsd) && pledge!("stdio rpath proc exec").is_err() {
+        die!("riodwm: pledge");
     }
+    
 
-    // Error checking
-    if !set_locale(LC_CTYPE, "") || !(supports_locale()) { // TODO: set_locale
-        todo!();
-    }
-
-    // if cfg!(openbsd) && pledge("stdio rpath proc exec", NULL) == -1 {
-    //     die!("pledge");
-    // }
+    let (conn, screen_num) = x11rb::connect(None).unwrap();
 
 
 
-    // Wrapper type: should not need to manage mem as should
-    // be dealt with by impl
-    let display = Display::new(); // What is the error about _XDisplay?
-    if display.is_none() { 
-        die!("dwm: cannot open display");
-    }
 
 
 
