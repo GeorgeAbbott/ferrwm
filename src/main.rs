@@ -54,6 +54,7 @@ fn setup(display: &Display) {
 
     let bar_height = drawable.fonts.height + 2; // will not make global but instead pass to every func that needs it
     updategeom(); // TODO
+                  
 
     /* init atoms */
     todo!();
