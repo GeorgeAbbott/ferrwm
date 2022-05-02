@@ -18,6 +18,8 @@ use openbsd::pledge;
 // use x11::keysym::*;
 // use x11::*;
 use x11rb;
+use x11rb::protocol::xproto;
+use x11rb::rust_connection::RustConnection;
 
 
 /* Wrapper Types */
@@ -28,16 +30,16 @@ use crate::config;
 use crate::xwrap::supports_locale;
 
 
-fn check_other_wm() {
-}
 
-fn setup(display: &Display) {
-    let window_attributes: x11::xlib::XSetWindowAttributes;
-    let atom: x11::xlib::Atom;
+fn setup(conn: &RustConnection) {
+    // let window_attributes: x11::xlib::XSetWindowAttributes;
+    // let atom: x11::xlib::Atom;
+    
 
 
     /* clean up any zombies immediately */
     // sigchld(0); // TODO: ???
+
 
     /* init screen */
     let screen = DefaultScreen(display);
@@ -70,9 +72,6 @@ fn scan() {
 fn run() {
 }
 
-
-
-
 fn main() {
     let argv: Vec<String> = env::args().collect();
     let argc = argv.len();
@@ -90,16 +89,10 @@ fn main() {
     
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
+    let (sw, sh) = x11rb::protocol::randr::get_screen_info(conn, screen_num);
 
-
-
-
-
-
-
-    // todo: rest of main
-    check_other_wm();
-    setup(display);
+    check_other_wm(conn); // TODO: implement
+    setup(conn);
     scan();
     run();
     // cleanup();
