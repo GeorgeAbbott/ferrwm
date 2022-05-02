@@ -89,6 +89,7 @@ fn main() {
     
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
+    // TODO: do not believe this to be correct. 
     let (sw, sh) = x11rb::protocol::randr::get_screen_info(conn, screen_num);
 
     check_other_wm(conn); // TODO: implement
