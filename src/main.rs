@@ -18,6 +18,9 @@ use openbsd::pledge;
 // use x11::keysym::*;
 // use x11::*;
 use x11rb;
+use x11rb::connection::Connection;
+use x11rb::protocol::Event;
+use x11rb::rust_connection::RustConnection;
 
 
 /* Wrapper Types */
@@ -67,7 +70,38 @@ fn setup(display: &Display) {
 fn scan() {
 }
 
-fn run() {
+fn handle_event(event: Event) {
+    match event {
+        Event::ButtonPress(e) => button_press(e),
+        Event::ClientMessage(e) => client_message(e),
+        Event::ConfigureRequest(e) => configure_request(e),
+        Event::ConfigureNotify(e) => configure_notify(e),
+        Event::DestroyNotify(e) => destroy_notify(e),
+        Event::EnterNotify(e) => enter_notify(e),
+        Event::Expose(e) => expose(e), 
+        Event::FocusIn(e) => focus_in(e),
+        Event::KeyPress(e) => key_press(e),
+        Event::MappingNotify(e) => mapping_notify(e),
+        Event::MapRequest(e) => map_request(e),
+        Event::MotionNotify(e) => motion_notify(e),
+        Event::PropertyNotify(e) => property_notify(e),
+        Event::UnmapNotify(e) => unmap_notify(e),
+        _ => {}, // do nothing 
+    };
+}
+
+fn run(conn: &RustConnection) {
+    let running = true; 
+
+    loop {
+        // TODO: this is just here to start, this needs to be double checked
+        if !running { break; }
+
+        if let Some(event) = conn.wait_for_event() {
+            handle_event(event);
+        }
+    }
+
 }
 
 
@@ -90,6 +124,8 @@ fn main() {
     
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
+
+    
 
 
 
