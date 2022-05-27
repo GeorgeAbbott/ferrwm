@@ -1,6 +1,7 @@
 // Modules
 // mod structs;
 // mod tagmasks;
+mod event_handlers;
 mod enums;
 mod consts;
 mod drawable;
@@ -35,8 +36,6 @@ use crate::xwrap::supports_locale;
 fn setup(conn: &RustConnection) {
     // let window_attributes: x11::xlib::XSetWindowAttributes;
     // let atom: x11::xlib::Atom;
-    
-
 
     /* clean up any zombies immediately */
     // sigchld(0); // TODO: ???
@@ -71,6 +70,10 @@ fn scan() {
 }
 
 fn handle_event(event: Event) {
+    use event_handlers::*;
+    // TODO: a lot of these event handlers need global state in dwm. How should 
+    // I do that here? I could pass in a variable (environment) which I mutate
+    // in these... but this is global state. I want to make this more pure. 
     match event {
         Event::ButtonPress(e) => button_press(e),
         Event::ClientMessage(e) => client_message(e),
