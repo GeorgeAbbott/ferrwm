@@ -21,6 +21,8 @@ use openbsd::pledge;
 use x11rb;
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
+use x11rb::protocol::randr::MonitorInfo;
+use x11rb::protocol::xproto::Atom;
 use x11rb::rust_connection::RustConnection;
 
 
@@ -31,16 +33,24 @@ use crate::types::drw::Drw;
 use crate::config;
 use crate::xwrap::supports_locale;
 
+struct Environment {
+    status_text: String,// TODO: check ownership: String or &'a str? 
+    screen: i32,
+    screen_width: i32,
+    screen_height: i32,
+    bar_height: i32, 
+    bar_lw: i32, // TODO: what is blw in original?
+    lr_padding: i32, // sum of left and right padding for text
+    // xerrorxlib - ???
+    numlock_mask: i32,
 
+}
 
 fn setup(conn: &RustConnection) {
     // let window_attributes: x11::xlib::XSetWindowAttributes;
     // let atom: x11::xlib::Atom;
-
     /* clean up any zombies immediately */
     // sigchld(0); // TODO: ???
-
-
     /* init screen */
     let screen = DefaultScreen(display);
     let screen_width = DisplayWidth(display, screen);
@@ -69,11 +79,12 @@ fn setup(conn: &RustConnection) {
 fn scan() {
 }
 
-fn handle_event(event: Event) {
+fn handle_event(event: Event, env: Environment) {
     use event_handlers::*;
     // TODO: a lot of these event handlers need global state in dwm. How should 
     // I do that here? I could pass in a variable (environment) which I mutate
     // in these... but this is global state. I want to make this more pure. 
+    // TODO: add environment into here
     match event {
         Event::ButtonPress(e) => button_press(e),
         Event::ClientMessage(e) => client_message(e),
@@ -104,7 +115,6 @@ fn run(conn: &RustConnection) {
             handle_event(event);
         }
     }
-
 }
 
 fn main() {

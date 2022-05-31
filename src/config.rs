@@ -19,18 +19,7 @@ pub const COLORS: &[&[&str; NUM_COLOR]] =
          // TODO add further elements... 
     ];
 
-pub const TAGS: &[&str] = 
-&[ 
-    "1", 
-    "2", 
-    "3", 
-    "4", 
-    "5", 
-    "6", 
-    "7", 
-    "8", 
-    "9",
-];
+pub const TAGS: &[&str] = &[ "1", "2", "3", "4", "5", "6", "7", "8", "9", ];
                             
 
 

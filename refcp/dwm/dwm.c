@@ -152,7 +152,7 @@ static Cur *cursor[CurLast];
 static Clr **scheme;
 static Display *dpy;
 static Drw *drw;
-static Monitor *mons, *selmon;
+static Monitor *mons, *selmon; // Maybe MonitorInfo instead?
 static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
@@ -305,13 +305,17 @@ attachstack(Client *c)
 void
 buttonpress(XEvent *e)
 {
+    // all external dependencies:
+    // wintomon, selmon, wintoclient, 
+    // In config.h: tags,
+    // Enums: ClkLtSymbol, ClkStatusText, ClkTagBar... (use enums::Click)
 	unsigned int i, x, click;
 	Arg arg = {0};
 	Client *c;
 	Monitor *m;
 	XButtonPressedEvent *ev = &e->xbutton;
 
-	click = ClkRootWin;
+	click = ClkRootWin; // just an enum number so still pure
 	/* focus monitor if necessary */
 	if ((m = wintomon(ev->window)) && m != selmon) {
 		unfocus(selmon->sel, 1);
@@ -464,6 +468,7 @@ configurenotify(XEvent *e)
 	}
 }
 
+// afaict does not use global variables 
 void
 configurerequest(XEvent *e)
 {
@@ -643,6 +648,8 @@ drawbars(void)
 		drawbar(m);
 }
 
+// Calls wintomon and wintoclient which requires references to root e.g. 
+// global state. 
 void
 enternotify(XEvent *e)
 {
@@ -662,6 +669,7 @@ enternotify(XEvent *e)
 	focus(c);
 }
 
+// Calls wintomon, which references root. So it can't be standalone. 
 void
 expose(XEvent *e)
 {
@@ -1930,6 +1938,7 @@ view(const Arg *arg)
 	arrange(selmon);
 }
 
+// mons: global state
 Client *
 wintoclient(Window w)
 {

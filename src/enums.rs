@@ -4,6 +4,16 @@ pub enum BarPosition {
     Bottom,
 }
 
+pub enum Click {
+    TagBar,
+    LtSymbol, // ???
+    StatusText,
+    WindowTitle,
+    ClientWindow,
+    RootWindow,
+    Last,
+}
+
 // For dwm.c equiv
 enum Cursor {
     // TODO: this is just used as an alias for list indices so maybe even 
