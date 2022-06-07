@@ -54,14 +54,25 @@ struct Environment {
 
 }
 
-fn setup(conn: &RustConnection) {
+fn setup(conn: &RustConnection, screen_num: usize) {
     // let window_attributes: x11::xlib::XSetWindowAttributes;
     // let atom: x11::xlib::Atom;
     /* clean up any zombies immediately */
     // sigchld(0); // TODO: ???
     /* init screen */
-    // let screen = DefaultScreen(display);
+    let screen = &conn.setup().roots[screen_num];
+    let screen_width = screen.width_in_pixels;
+    let screen_height = screen.height_in_pixels;
+    let root_window = screen.root;
+
+    // TODO: add drawable etc. here. Also consider how globals etc are to 
+    // work; env parameter passed about might still be a good idea.
+
+
+    // let screen = DefaultScreen(display); /* this is returned from ::connect and stored in
+    // screen_num 
     // let screen_width = DisplayWidth(display, screen);
+
     // let screen_height = DisplayHeight(display, screen);
     // let root = RootWindow(display, screen);
     // let drawable = drawable::MyDrawable::new(display, screen, root, screen_width, screen_height); // TODO: replace with Drw::new
@@ -166,7 +177,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // };
     // todo: rest of main
     // check_other_wm(conn); // TODO: implement
-    // setup(&conn);
+    setup(&conn, screen_num);
     // scan();
     // run();
     // cleanup();
