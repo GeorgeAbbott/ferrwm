@@ -21,8 +21,8 @@ use openbsd::pledge;
 use x11rb;
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
-use x11rb::protocol::randr::MonitorInfo;
-use x11rb::protocol::xproto::Atom;
+use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
+use x11rb::protocol::xproto::{Atom, Screen};
 use x11rb::rust_connection::RustConnection;
 
 
@@ -31,18 +31,26 @@ use crate::types::display::Display;
 use crate::types::fnt::Fnt;
 use crate::types::drw::Drw;
 use crate::config;
-use crate::xwrap::supports_locale;
+// use crate::xwrap::supports_locale;
+
+// Alias
+type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
+
+// Update the status with the text if present, if empty use default text.
+fn update_status(text: &str) {
+    
+}
 
 struct Environment {
-    status_text: String,// TODO: check ownership: String or &'a str? 
-    screen: i32,
-    screen_width: i32,
-    screen_height: i32,
-    bar_height: i32, 
-    bar_lw: i32, // TODO: what is blw in original?
-    lr_padding: i32, // sum of left and right padding for text
+    pub status_text: String,// TODO: check ownership: String or &'a str? 
+    pub screen: i32,
+    pub screen_width: i32,
+    pub screen_height: i32,
+    pub bar_height: i32, 
+    pub bar_lw: i32, // TODO: what is blw in original?
+    pub lr_padding: i32, // sum of left and right padding for text
     // xerrorxlib - ???
-    numlock_mask: i32,
+    pub numlock_mask: i32,
 
 }
 
@@ -79,34 +87,35 @@ fn setup(conn: &RustConnection) {
 fn scan() {
 }
 
-fn handle_event(event: Event, env: Environment) {
+fn handle_event(event: Event, env: &Environment) {
     use event_handlers::*;
     // TODO: a lot of these event handlers need global state in dwm. How should 
     // I do that here? I could pass in a variable (environment) which I mutate
     // in these... but this is global state. I want to make this more pure. 
     // TODO: add environment into here
+    
     match event {
-        Event::ButtonPress(e) => button_press(e),
-        Event::ClientMessage(e) => client_message(e),
-        Event::ConfigureRequest(e) => configure_request(e),
-        Event::ConfigureNotify(e) => configure_notify(e),
-        Event::DestroyNotify(e) => destroy_notify(e),
-        Event::EnterNotify(e) => enter_notify(e),
-        Event::Expose(e) => expose(e), 
-        Event::FocusIn(e) => focus_in(e),
-        Event::KeyPress(e) => key_press(e),
-        Event::MappingNotify(e) => mapping_notify(e),
-        Event::MapRequest(e) => map_request(e),
-        Event::MotionNotify(e) => motion_notify(e),
-        Event::PropertyNotify(e) => property_notify(e),
-        Event::UnmapNotify(e) => unmap_notify(e),
+        Event::ButtonPress(e) => button_press(e, env),
+        Event::ClientMessage(e) => client_message(e, env),
+        Event::ConfigureRequest(e) => configure_request(e, env),
+        Event::ConfigureNotify(e) => configure_notify(e, env),
+        Event::DestroyNotify(e) => destroy_notify(e, env),
+        Event::EnterNotify(e) => enter_notify(e, env),
+        Event::Expose(e) => expose(e, env), 
+        Event::FocusIn(e) => focus_in(e, env),
+        Event::KeyPress(e) => key_press(e, env),
+        Event::MappingNotify(e) => mapping_notify(e, env),
+        Event::MapRequest(e) => map_request(e, env),
+        Event::MotionNotify(e) => motion_notify(e, env),
+        Event::PropertyNotify(e) => property_notify(e, env),
+        Event::UnmapNotify(e) => unmap_notify(e, env),
         _ => {}, // do nothing 
     };
 }
 
 fn run(conn: &RustConnection) {
     let running = true; 
-
+}
     loop {
         // TODO: this is just here to start, this needs to be double checked
         if !running { break; }
@@ -134,12 +143,23 @@ fn main() {
     
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
+
     // TODO: do not believe this to be correct. 
     let (sw, sh) = x11rb::protocol::randr::get_screen_info(conn, screen_num);
+    let env = Environment {
+        status_text: "",
+        screen_width: 0,
+    }
+
+    
+    
+        .
+
+        .build();
 
     // todo: rest of main
     check_other_wm(conn); // TODO: implement
-    setup(conn);
+    setup(&conn);
     scan();
     run();
     // cleanup();

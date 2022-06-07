@@ -801,6 +801,7 @@ getstate(Window w)
 
 // get_text_property(w: Window, atom: x11::Atom, text: &str) -> Result<()>
 // LESS_PRIORITY_TEXT
+// What does this do? 
 int
 gettextprop(Window w, Atom atom, char *text, unsigned int size)
 {
@@ -1158,6 +1159,8 @@ recttomon(int x, int y, int w, int h)
 {
 	Monitor *m, *r = selmon;
 	int a, area = 0;
+
+    // For each monitor, 
 
 	for (m = mons; m; m = m->next)
 		if ((a = INTERSECT(x, y, w, h, m)) > area) {
@@ -1877,6 +1880,7 @@ updatesizehints(Client *c)
 }
 
 // LESS_PRIORITY_TEXT
+// In Rust, write this as update_status(status: &str)
 void
 updatestatus(void)
 {
@@ -1939,11 +1943,19 @@ view(const Arg *arg)
 }
 
 // mons: global state
+// How to implement: mons should be a part of env so can get passed with that
+//
 Client *
 wintoclient(Window w)
 {
 	Client *c;
 	Monitor *m;
+
+    // Search over each monitor and each client, 
+    // if client.win == w then return c. 
+    // This is not owning by the looks of things, 
+    // it is just a view to the client which has 
+    // the window on it.
 
 	for (m = mons; m; m = m->next)
 		for (c = m->clients; c; c = c->next)
