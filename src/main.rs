@@ -4,7 +4,7 @@
 mod event_handlers;
 mod enums;
 mod consts;
-// mod drawable;
+mod drawable;
 // mod config;
 // mod types;
 // mod wrapx;
@@ -13,6 +13,7 @@ mod consts;
 use std::env;
 use die::die;
 use openbsd::pledge;
+use crate::drawable::Draw;
 
 /* X11 */
 // use x11::xlib::*;
@@ -64,6 +65,8 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let screen_width = screen.width_in_pixels;
     let screen_height = screen.height_in_pixels;
     let root_window = screen.root;
+    let win_id = conn.generate_id();
+    let drw = Draw::new(conn, screen, root_window, screen_width, screen_height);
 
     // TODO: add drawable etc. here. Also consider how globals etc are to 
     // work; env parameter passed about might still be a good idea.
@@ -154,11 +157,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
-
-    // TODO: do not believe this to be correct. 
-    // let (sw, sh) = x11rb::protocol::randr::get_screen_info(conn, screen_num);
-    let screen = &conn.setup().roots[screen_num];
-    let win_id = conn.generate_id()?;
 
     conn.create_window(
         COPY_DEPTH_FROM_PARENT,
