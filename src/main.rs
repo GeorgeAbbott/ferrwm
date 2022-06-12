@@ -69,6 +69,8 @@ fn setup(conn: &RustConnection, screen_num: usize) {
 
     let win_id = conn.generate_id(); // what was this for? 
     let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
+    let fontset_create_result = draw.create_fontset(fonts);
+
 
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new

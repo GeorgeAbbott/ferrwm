@@ -10,6 +10,7 @@ pub struct Draw<'a> {
     height: u16,
     id_drawable: u32,
     id_gc: u32,
+    // also XftColor *scheme and Fnt *fonts
 }
 
 impl<'a> Draw<'a> {
@@ -50,6 +51,8 @@ impl<'a> Draw<'a> {
 
         self.id_drawable = id_drawable;
     }
+
+    fn create_color() {}
 
     fn draw_rect(&self, x: usize, y: usize, w: usize, h: usize,
                      filled: bool, invert: bool) { todo!(); }
