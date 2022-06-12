@@ -14,6 +14,7 @@ use std::env;
 use die::die;
 use openbsd::pledge;
 use crate::drawable::Draw;
+use event_handlers::*;
 
 /* X11 */
 // use x11::xlib::*;
@@ -23,7 +24,7 @@ use x11rb::{self, COPY_DEPTH_FROM_PARENT};
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
-use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux};
+use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window};
 use x11rb::rust_connection::RustConnection;
 
 
@@ -67,9 +68,13 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let root: u32 = screen.root;
     let screen_depth: u8 = screen.root_depth;
 
-    let win_id = conn.generate_id(); // what was this for? 
     let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
-    let fontset_create_result = draw.create_fontset(fonts);
+    // let fontset_create_result = draw.create_fontset(fonts);
+
+    // TODO: find whatever the xcb equivalent for XSelectInput is, and use 
+    // that to get SubstructureRedirectMask. 
+
+
 
 
     // let font = drawable::Font::new(&drawable, 
@@ -93,7 +98,7 @@ fn setup(conn: &RustConnection, screen_num: usize) {
 fn scan() {
 }
 
-fn handle_event(event: Event, env: &Environment) {
+fn handle_event(event: Event) {
     use event_handlers::*;
     // TODO: a lot of these event handlers need global state in dwm. How should 
     // I do that here? I could pass in a variable (environment) which I mutate
@@ -101,35 +106,28 @@ fn handle_event(event: Event, env: &Environment) {
     // TODO: add environment into here
     
     match event {
-        // Event::ButtonPress(e) => button_press(e, env),
-        // Event::ClientMessage(e) => client_message(e, env),
-        // Event::ConfigureRequest(e) => configure_request(e, env),
-        // Event::ConfigureNotify(e) => configure_notify(e, env),
-        // Event::DestroyNotify(e) => destroy_notify(e, env),
-        // Event::EnterNotify(e) => enter_notify(e, env),
-        // Event::Expose(e) => expose(e, env), 
-        // Event::FocusIn(e) => focus_in(e, env),
-        // Event::KeyPress(e) => key_press(e, env),
-        // Event::MappingNotify(e) => mapping_notify(e, env),
-        // Event::MapRequest(e) => map_request(e, env),
-        // Event::MotionNotify(e) => motion_notify(e, env),
-        // Event::PropertyNotify(e) => property_notify(e, env),
-        // Event::UnmapNotify(e) => unmap_notify(e, env),
+        Event::ButtonPress(e) => button_press(e),
+        Event::ClientMessage(e) => client_message(e),
+        Event::ConfigureRequest(e) => configure_request(e),
+        Event::ConfigureNotify(e) => configure_notify(e),
+        Event::DestroyNotify(e) => destroy_notify(e),
+        Event::EnterNotify(e) => enter_notify(e),
+        Event::Expose(e) => expose(e),
+        Event::FocusIn(e) => focus_in(e),
+        Event::KeyPress(e) => key_press(e),
+        Event::MappingNotify(e) => mapping_notify(e),
+        Event::MapRequest(e) => map_request(e),
+        Event::MotionNotify(e) => motion_notify(e),
+        Event::PropertyNotify(e) => property_notify(e),
+        Event::UnmapNotify(e) => unmap_notify(e),
         _ => {}, // do nothing 
     };
 }
 
-fn run(conn: &RustConnection, env: &Environment) {
-    let running = true; 
-
-    loop {
-        // TODO: this is just here to start, this needs to be double checked
-        if !running { break; }
-
-        if let Ok(event) = conn.wait_for_event() {
-            handle_event(event, env);
-        }
-    }
+fn run(conn: &RustConnection) {
+    while let Ok(event) = conn.wait_for_event() {
+        handle_event(event);
+    } 
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -153,7 +151,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // check_other_wm(conn); // TODO: implement
     setup(&conn, screen_num);
     // scan();
-    // run();
+    
+    run(&conn);
     // cleanup();
     
     Ok(())

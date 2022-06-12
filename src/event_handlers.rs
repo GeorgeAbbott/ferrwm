@@ -11,17 +11,17 @@ use x11rb::protocol::{
     Event,
 };
 
-fn button_press(event: ButtonPressEvent) {}
-fn client_message(event: ClientMessageEvent) {}
-fn configure_request(event: ConfigureRequestEvent) {}
-fn configure_notify(event: ConfigureNotifyEvent) {}
-fn destroy_notify(event: DestroyNotifyEvent) {}
-fn enter_notify(event: EnterNotifyEvent) {}
-fn expose(event: ExposeEvent) {}
-fn focus_in(event: FocusInEvent) {}
-fn key_press(event: KeyPressEvent) {}
-fn mapping_notify(event: MappingNotifyEvent) {}
-fn map_request(event: MapRequestEvent) {}
-fn motion_notify(event: MotionNotifyEvent) {}
-fn property_notify(event: PropertyNotifyEvent) {}
-fn unmap_notify(event: UnmapNotifyEvent) {}
+pub fn button_press(event: ButtonPressEvent) {}
+pub fn client_message(event: ClientMessageEvent) {}
+pub fn configure_request(event: ConfigureRequestEvent) {}
+pub fn configure_notify(event: ConfigureNotifyEvent) {}
+pub fn destroy_notify(event: DestroyNotifyEvent) {}
+pub fn enter_notify(event: EnterNotifyEvent) {}
+pub fn expose(event: ExposeEvent) {}
+pub fn focus_in(event: FocusInEvent) {}
+pub fn key_press(event: KeyPressEvent) {}
+pub fn mapping_notify(event: MappingNotifyEvent) {}
+pub fn map_request(event: MapRequestEvent) {}
+pub fn motion_notify(event: MotionNotifyEvent) {}
+pub fn property_notify(event: PropertyNotifyEvent) {}
+pub fn unmap_notify(event: UnmapNotifyEvent) {}
