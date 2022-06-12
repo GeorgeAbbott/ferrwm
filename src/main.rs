@@ -62,23 +62,13 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     // sigchld(0); // TODO: ???
     /* init screen */
     let screen = &conn.setup().roots[screen_num];
-    let screen_width = screen.width_in_pixels;
-    let screen_height = screen.height_in_pixels;
-    let root_window = screen.root;
-    let win_id = conn.generate_id();
-    let drw = Draw::new(conn, screen, root_window, screen_width, screen_height);
+    let screen_width: u16 = screen.width_in_pixels;
+    let screen_height: u16 = screen.height_in_pixels;
+    let root: u32 = screen.root;
+    let screen_depth: u8 = screen.root_depth;
 
-    // TODO: add drawable etc. here. Also consider how globals etc are to 
-    // work; env parameter passed about might still be a good idea.
-
-
-    // let screen = DefaultScreen(display); /* this is returned from ::connect and stored in
-    // screen_num 
-    // let screen_width = DisplayWidth(display, screen);
-
-    // let screen_height = DisplayHeight(display, screen);
-    // let root = RootWindow(display, screen);
-    // let drawable = drawable::MyDrawable::new(display, screen, root, screen_width, screen_height); // TODO: replace with Drw::new
+    let win_id = conn.generate_id(); // what was this for? 
+    let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
 
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new
@@ -158,22 +148,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
 
-    conn.create_window(
-        COPY_DEPTH_FROM_PARENT,
-        win_id, 
-        screen.root, 
-        0, 0, 
-        100, 100, 
-        0, WindowClass::INPUT_OUTPUT, 
-        0,
-        &CreateWindowAux::new().background_pixel(screen.white_pixel)
-        );
-    
-    // let env = Environment {
-    //     status_text: "",
-    //     screen_width: 0,
-    // };
-    // todo: rest of main
     // check_other_wm(conn); // TODO: implement
     setup(&conn, screen_num);
     // scan();
