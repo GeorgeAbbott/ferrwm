@@ -58,6 +58,8 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
     // let fontset_create_result = draw.create_fontset(fonts);
 
+    // Get SUBSTRUCTURE_NOTIFY and SUBSTRUCTURE_REDIRECT; will error if another
+    // window manager is running.
     let mask =
         EventMask::SUBSTRUCTURE_REDIRECT |
         EventMask::SUBSTRUCTURE_NOTIFY; 
@@ -142,7 +144,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (conn, screen_num) = x11rb::connect(None).unwrap();
 
-    // check_other_wm(conn); // TODO: implement
     setup(&conn, screen_num);
     // scan();
     
