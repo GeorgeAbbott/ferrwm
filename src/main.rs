@@ -6,8 +6,6 @@ mod enums;
 mod consts;
 mod drawable;
 // mod config;
-// mod types;
-// mod wrapx;
 
 // Usings
 use std::env;
@@ -17,23 +15,12 @@ use crate::drawable::Draw;
 use event_handlers::*;
 
 /* X11 */
-// use x11::xlib::*;
-// use x11::keysym::*;
-// use x11::*;
 use x11rb::{self, COPY_DEPTH_FROM_PARENT};
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
 use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask, change_property, change_window_attributes};
 use x11rb::rust_connection::RustConnection;
-
-
-/* Wrapper Types */
-// use crate::types::display::Display;
-// use crate::types::fnt::Fnt;
-// use crate::types::drw::Drw;
-// use crate::config;
-// use crate::xwrap::supports_locale;
 
 // Alias
 type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
@@ -71,9 +58,6 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
     // let fontset_create_result = draw.create_fontset(fonts);
 
-    // TODO: find whatever the xcb equivalent for XSelectInput is, and use 
-    // that to get SubstructureRedirectMask. 
-
     let mask =
         EventMask::SUBSTRUCTURE_REDIRECT |
         EventMask::SUBSTRUCTURE_NOTIFY; 
@@ -81,7 +65,11 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let cookie_cwa = change_window_attributes(conn, root, 
                                         &ChangeWindowAttributesAux::new()
                                         .event_mask(mask))
-        .expect("could not get substructure_redirect or substructure_notify");
+        .expect("setup: change_window_attributes failed");
+
+    if let Some(err) = cookie_cwa.check().err() {
+        die!("Failed with error {}", err.to_string());
+    }
 
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new
