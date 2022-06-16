@@ -24,7 +24,7 @@ use x11rb::{self, COPY_DEPTH_FROM_PARENT};
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
-use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window};
+use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask};
 use x11rb::rust_connection::RustConnection;
 
 
@@ -74,6 +74,12 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     // TODO: find whatever the xcb equivalent for XSelectInput is, and use 
     // that to get SubstructureRedirectMask. 
 
+    let event_mask =
+        EventMask::SUBSTRUCTURE_REDIRECT |
+        EventMask::SUBSTRUCTURE_NOTIFY ; 
+    // TODO actually register this event mask
+
+                    
 
 
 
