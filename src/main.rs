@@ -44,10 +44,6 @@ struct Environment {
 }
 
 fn setup(conn: &RustConnection, screen_num: usize) {
-    // let window_attributes: x11::xlib::XSetWindowAttributes;
-    // let atom: x11::xlib::Atom;
-    /* clean up any zombies immediately */
-    // sigchld(0); // TODO: ???
     /* init screen */
     let screen = &conn.setup().roots[screen_num];
     let screen_width: u16 = screen.width_in_pixels;
