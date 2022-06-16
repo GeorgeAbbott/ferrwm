@@ -24,7 +24,7 @@ use x11rb::{self, COPY_DEPTH_FROM_PARENT};
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
-use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask};
+use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask, change_property, change_window_attributes};
 use x11rb::rust_connection::RustConnection;
 
 
@@ -39,8 +39,8 @@ use x11rb::rust_connection::RustConnection;
 type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
 
 // Update the status with the text if present, if empty use default text.
-fn update_status(text: &str) {
-    
+fn update_status(conn: &RustConnection, root_id: u32, text: &str) {
+    // change_property(conn, root_id, )        
 }
 
 struct Environment {
@@ -74,14 +74,14 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     // TODO: find whatever the xcb equivalent for XSelectInput is, and use 
     // that to get SubstructureRedirectMask. 
 
-    let event_mask =
+    let mask =
         EventMask::SUBSTRUCTURE_REDIRECT |
-        EventMask::SUBSTRUCTURE_NOTIFY ; 
-    // TODO actually register this event mask
+        EventMask::SUBSTRUCTURE_NOTIFY; 
 
-                    
-
-
+    let cookie_cwa = change_window_attributes(conn, root, 
+                                        &ChangeWindowAttributesAux::new()
+                                        .event_mask(mask))
+        .expect("could not get substructure_redirect or substructure_notify");
 
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new
