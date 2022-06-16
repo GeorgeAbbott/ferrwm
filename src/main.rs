@@ -141,14 +141,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let argc = argv.len();
     
     if argc == 2 && argv[1] != "-v" {
-        die!("riodwm-{}", consts::VERSION);
+        die!("ferrwm-{}", consts::VERSION);
     } else if argc != 1 {
-        die!("usage: riodwm [-v]");
+        die!("usage: ferrwm [-v]");
     }
     // TODO: add error checking for locale
 
     if cfg!(openbsd) && pledge!("stdio rpath proc exec").is_err() {
-        die!("riodwm: pledge");
+        die!("ferrwm: pledge");
     }
     
 
