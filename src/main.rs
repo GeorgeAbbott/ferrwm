@@ -5,6 +5,7 @@ mod event_handlers;
 mod enums;
 mod consts;
 mod drawable;
+mod bar;
 // mod config;
 
 use std::collections::LinkedList;
