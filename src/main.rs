@@ -7,6 +7,7 @@ mod consts;
 mod drawable;
 // mod config;
 
+use std::collections::LinkedList;
 // Usings
 use std::env;
 use die::die;
