@@ -59,15 +59,13 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let mask =
         EventMask::SUBSTRUCTURE_REDIRECT |
         EventMask::SUBSTRUCTURE_NOTIFY; 
+    let cwa = ChangeWindowAttributesAux::new()
+        .event_mask(mask);
 
-    let cookie_cwa = change_window_attributes(conn, root, 
-                                        &ChangeWindowAttributesAux::new()
-                                        .event_mask(mask))
-        .expect("setup: change_window_attributes failed");
-
-    if let Some(err) = cookie_cwa.check().err() {
-        die!("Failed with error {}", err.to_string());
-    }
+    if let Some(err) = change_window_attributes(conn, root, &cwa)
+        .expect("setup: change_window_attributes failed").check().err() {
+            die("Failed with error {}", err.to_string());
+        }
 
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new
