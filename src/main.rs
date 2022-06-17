@@ -64,7 +64,7 @@ fn setup(conn: &RustConnection, screen_num: usize) {
 
     if let Some(err) = change_window_attributes(conn, root, &cwa)
         .expect("setup: change_window_attributes failed").check().err() {
-            die("Failed with error {}", err.to_string());
+            die!("Failed with error {}", err.to_string());
         }
 
     // let font = drawable::Font::new(&drawable, 
