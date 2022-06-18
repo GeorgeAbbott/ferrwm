@@ -15,6 +15,7 @@ use die::die;
 use openbsd::pledge;
 use crate::drawable::Draw;
 use event_handlers::*;
+use log::{debug, error, info, warn, trace};
 
 /* X11 */
 use x11rb::{self, COPY_DEPTH_FROM_PARENT};
@@ -104,6 +105,7 @@ fn handle_event(event: Event) {
     // I do that here? I could pass in a variable (environment) which I mutate
     // in these... but this is global state. I want to make this more pure. 
     // TODO: add environment into here
+    trace!("Entering handle_event");
     
     match event {
         Event::ButtonPress(e) => button_press(e),
@@ -131,6 +133,7 @@ fn run(conn: &RustConnection) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
     let argv: Vec<String> = env::args().collect();
     let argc = argv.len();
     

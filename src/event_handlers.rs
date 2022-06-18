@@ -1,3 +1,4 @@
+use log::{trace, debug, warn, error, info};
 #![allow(unused)]
 // Holds functions to handle events which are called from handle_event
 // function in main.rs.
@@ -21,9 +22,9 @@ pub fn enter_notify(event: EnterNotifyEvent) {}
 pub fn expose(event: ExposeEvent) {}
 pub fn focus_in(event: FocusInEvent) {}
 pub fn key_press(event: KeyPressEvent) {
+    trace!("Entered key_press");
     let keypress = event.detail;
-    
-
+    debug!("Keypress value: {}", keypress);
 }
 pub fn mapping_notify(event: MappingNotifyEvent) {}
 pub fn map_request(event: MapRequestEvent) {}
