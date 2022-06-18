@@ -1,3 +1,4 @@
+#![allow(unused)]
 // Holds functions to handle events which are called from handle_event
 // function in main.rs.
 
@@ -19,7 +20,11 @@ pub fn destroy_notify(event: DestroyNotifyEvent) {}
 pub fn enter_notify(event: EnterNotifyEvent) {}
 pub fn expose(event: ExposeEvent) {}
 pub fn focus_in(event: FocusInEvent) {}
-pub fn key_press(event: KeyPressEvent) {}
+pub fn key_press(event: KeyPressEvent) {
+    let keypress = event.detail;
+    
+
+}
 pub fn mapping_notify(event: MappingNotifyEvent) {}
 pub fn map_request(event: MapRequestEvent) {}
 pub fn motion_notify(event: MotionNotifyEvent) {}

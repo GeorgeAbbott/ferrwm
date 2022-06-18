@@ -59,8 +59,16 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     // Get SUBSTRUCTURE_NOTIFY and SUBSTRUCTURE_REDIRECT; will error if another
     // window manager is running.
     let mask =
-        EventMask::SUBSTRUCTURE_REDIRECT |
-        EventMask::SUBSTRUCTURE_NOTIFY; 
+          EventMask::SUBSTRUCTURE_REDIRECT
+        | EventMask::SUBSTRUCTURE_NOTIFY
+        | EventMask::BUTTON_PRESS
+        | EventMask::POINTER_MOTION 
+        | EventMask::ENTER_WINDOW
+        | EventMask::LEAVE_WINDOW
+        | EventMask::STRUCTURE_NOTIFY
+        | EventMask::PROPERTY_CHANGE 
+        | EventMask::KEY_PRESS
+        ;
     let cwa = ChangeWindowAttributesAux::new()
         .event_mask(mask);
 
