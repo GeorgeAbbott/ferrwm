@@ -1,5 +1,8 @@
+#![allow(unused_variables)]
+
 use log::{trace, debug, warn, error, info};
-#![allow(unused)]
+use crate::utils::logf;
+#[allow(unused)]
 // Holds functions to handle events which are called from handle_event
 // function in main.rs.
 
@@ -23,8 +26,13 @@ pub fn expose(event: ExposeEvent) {}
 pub fn focus_in(event: FocusInEvent) {}
 pub fn key_press(event: KeyPressEvent) {
     trace!("Entered key_press");
+    logf("Entered key_press");
+    
     let keypress = event.detail;
+
+
     debug!("Keypress value: {}", keypress);
+    logf(format!("keypress value: {}", keypress).as_str());
 }
 pub fn mapping_notify(event: MappingNotifyEvent) {}
 pub fn map_request(event: MapRequestEvent) {}

@@ -6,16 +6,20 @@ mod enums;
 mod consts;
 mod drawable;
 mod bar;
+mod utils;
 // mod config;
 
 use std::collections::LinkedList;
 // Usings
 use std::env;
+use std::io::Write;
 use die::die;
 use openbsd::pledge;
 use crate::drawable::Draw;
 use event_handlers::*;
+#[allow(unused_imports)]
 use log::{debug, error, info, warn, trace};
+use utils::logf;
 
 /* X11 */
 use x11rb::{self, COPY_DEPTH_FROM_PARENT};
@@ -32,6 +36,7 @@ type Monitor = MonitorInfo; // not sure whether monitor info correct struct
 fn update_status(conn: &RustConnection, root_id: u32, text: &str) {
     // change_property(conn, root_id, )        
 }
+
 
 struct Environment {
     pub status_text: String,// TODO: check ownership: String or &'a str? 
@@ -133,6 +138,7 @@ fn run(conn: &RustConnection) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    logf("ferrwm started");
     env_logger::init();
     let argv: Vec<String> = env::args().collect();
     let argc = argv.len();
