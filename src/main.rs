@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Modules
 // mod structs;
 // mod tagmasks;
@@ -7,7 +8,11 @@ mod consts;
 mod drawable;
 mod bar;
 mod utils;
-// mod config;
+mod wm;
+mod tag;
+mod client;
+mod config;
+
 
 use std::collections::LinkedList;
 // Usings
