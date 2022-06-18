@@ -1,4 +1,5 @@
 #![allow(unused_variables)]
+#![allow(unused_imports)]
 
 use log::{trace, debug, warn, error, info};
 use crate::utils::logf;
@@ -29,6 +30,10 @@ pub fn key_press(event: KeyPressEvent) {
     logf("Entered key_press");
     
     let keypress = event.detail;
+    let ketstate = event.state; // for my reference, this is a mask of 
+                                // mods at the time. It's over at 
+                                // xcb.freedesktop.org/tutorial/events
+                                // some halfway down
 
 
     debug!("Keypress value: {}", keypress);
