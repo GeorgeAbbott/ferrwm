@@ -67,6 +67,8 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
+// Used in functions e.g. in keybinds. Use an enum for this, and instead of 
+// e.g. {.v = ...} use Str(...)
 typedef union {
 	int i;
 	unsigned int ui;
