@@ -1,7 +1,9 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
+#![allow(dead_code)]
 
 use log::{trace, debug, warn, error, info};
+use x11rb::protocol::xproto::KeyButMask;
 use crate::{utils::logf, wm::WindowManager};
 #[allow(unused)]
 // Holds functions to handle events which are called from handle_event
@@ -30,10 +32,14 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         logf("Entered key_press");
         
         let keypress = event.detail;
-        let ketstate = event.state; // for my reference, this is a mask of 
+        let keystate = event.state; // for my reference, this is a mask of 
                                 // mods at the time. It's over at 
                                 // xcb.freedesktop.org/tutorial/events
                                 // some halfway down
+
+        // written like this so the warnings will stop hassling me, think this 
+        // is still correct
+        let ctrl_w = keypress == 25 && (keystate & u16::from(KeyButMask::SHIFT)) != 0;
 
     
         debug!("Keypress value: {}", keypress);

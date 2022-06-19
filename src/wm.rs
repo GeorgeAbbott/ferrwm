@@ -33,6 +33,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             screen_num,
             tags, 
             clients: Vec::new(),
+            status_text: "".to_string(),
         }
     }
 
