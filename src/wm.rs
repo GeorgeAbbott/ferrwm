@@ -17,6 +17,7 @@ pub struct WindowManager<'wm, 'rc> {
     screen_num: usize,
     tags: Vec<Tag<'wm>>,
     clients: Vec<Client>,
+    status_text: String, 
 }
 
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
@@ -60,4 +61,9 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             self.handle_event(event);
         }
     }
+
+    // TODO: Also needs root_id: this can be gotten from screen_num but perhaps
+    // store for convenience.
+    pub fn update_status_text(&self, text: &str) { todo!(); }
+    
 }

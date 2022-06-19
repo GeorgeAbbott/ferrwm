@@ -14,35 +14,24 @@ mod client;
 mod config;
 
 
-use std::collections::LinkedList;
 // Usings
 use std::env;
-use std::io::Write;
 use die::die;
 use openbsd::pledge;
 use wm::WindowManager;
 use crate::drawable::Draw;
-use event_handlers::*;
 #[allow(unused_imports)]
 use log::{debug, error, info, warn, trace};
 use utils::logf;
 
 /* X11 */
-use x11rb::{self, COPY_DEPTH_FROM_PARENT};
 use x11rb::connection::Connection;
-use x11rb::protocol::Event;
-use x11rb::protocol::randr::{MonitorInfo, get_screen_info};
+use x11rb::protocol::randr::MonitorInfo;
 use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask, change_property, change_window_attributes};
 use x11rb::rust_connection::RustConnection;
 
 // Alias
 type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
-
-// Update the status with the text if present, if empty use default text.
-// TODO: make this a method on WindowManager?
-fn update_status(conn: &RustConnection, root_id: u32, text: &str) {
-    // change_property(conn, root_id, )        
-}
 
 
 struct Environment {
