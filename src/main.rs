@@ -20,6 +20,7 @@ use std::env;
 use std::io::Write;
 use die::die;
 use openbsd::pledge;
+use wm::WindowManager;
 use crate::drawable::Draw;
 use event_handlers::*;
 #[allow(unused_imports)]
@@ -38,6 +39,7 @@ use x11rb::rust_connection::RustConnection;
 type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
 
 // Update the status with the text if present, if empty use default text.
+// TODO: make this a method on WindowManager?
 fn update_status(conn: &RustConnection, root_id: u32, text: &str) {
     // change_property(conn, root_id, )        
 }
@@ -88,6 +90,8 @@ fn setup(conn: &RustConnection, screen_num: usize) {
             die!("Failed with error {}", err.to_string());
         }
 
+    let wm = WindowManager::new(conn, screen_num);
+
     // let font = drawable::Font::new(&drawable, 
     //                                config::FONTS); // TODO: replace w/ Fnt::new
     // if font.is_none() {
@@ -107,39 +111,6 @@ fn setup(conn: &RustConnection, screen_num: usize) {
 }
 
 fn scan() {
-}
-
-fn handle_event(event: Event) {
-    use event_handlers::*;
-    // TODO: a lot of these event handlers need global state in dwm. How should 
-    // I do that here? I could pass in a variable (environment) which I mutate
-    // in these... but this is global state. I want to make this more pure. 
-    // TODO: add environment into here
-    trace!("Entering handle_event");
-    
-    match event {
-        Event::ButtonPress(e) => button_press(e),
-        Event::ClientMessage(e) => client_message(e),
-        Event::ConfigureRequest(e) => configure_request(e),
-        Event::ConfigureNotify(e) => configure_notify(e),
-        Event::DestroyNotify(e) => destroy_notify(e),
-        Event::EnterNotify(e) => enter_notify(e),
-        Event::Expose(e) => expose(e),
-        Event::FocusIn(e) => focus_in(e),
-        Event::KeyPress(e) => key_press(e),
-        Event::MappingNotify(e) => mapping_notify(e),
-        Event::MapRequest(e) => map_request(e),
-        Event::MotionNotify(e) => motion_notify(e),
-        Event::PropertyNotify(e) => property_notify(e),
-        Event::UnmapNotify(e) => unmap_notify(e),
-        _ => {}, // do nothing 
-    };
-}
-
-fn run(conn: &RustConnection) {
-    while let Ok(event) = conn.wait_for_event() {
-        handle_event(event);
-    } 
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -164,8 +135,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     setup(&conn, screen_num);
     // scan();
-    
-    run(&conn);
     // cleanup();
     
     Ok(())
