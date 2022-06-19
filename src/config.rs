@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
 /* All configurations can be changed here to fit your preferences. */
 use crate::enums::{BarPosition};
 
