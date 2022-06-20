@@ -3,7 +3,7 @@
 use x11rb::protocol::xproto::KeyButMask;
 
 /* All configurations can be changed here to fit your preferences. */
-use crate::{enums::{BarPosition}, utils::Key};
+use crate::{enums::{BarPosition}, utils::{Key, logf}};
 
 
 // Appearance
@@ -27,7 +27,7 @@ pub const TAGS: &[&str] = &[ "1", "2", "3", "4", "5", "6", "7", "8", "9", ];
 
 pub fn testfn(arg: &Argument) {
     if let Argument::Str(s) = arg {
-        println!("You said {}", s);
+        logf(format!("You said {}", s).as_str());
     }
 }
 
