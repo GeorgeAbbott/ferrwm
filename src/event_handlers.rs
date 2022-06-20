@@ -4,7 +4,7 @@
 
 use log::{trace, debug, warn, error, info};
 use x11rb::protocol::xproto::KeyButMask;
-use crate::{utils::logf, wm::WindowManager};
+use crate::{utils::{logf, configkey_to_key, is_pressed}, wm::WindowManager};
 #[allow(unused)]
 // Holds functions to handle events which are called from handle_event
 // function in main.rs.
@@ -31,17 +31,24 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         trace!("Entered key_press");
         logf("Entered key_press");
         
-        let keypress = event.detail;
+        let keypress: u8 = event.detail;
         let keystate = event.state; // for my reference, this is a mask of 
                                 // mods at the time. It's over at 
                                 // xcb.freedesktop.org/tutorial/events
                                 // some halfway down
 
         // written like this so the warnings will stop hassling me, think this 
-        // is still correct
-        let ctrl_w = keypress == 25 && (keystate & u16::from(KeyButMask::SHIFT)) != 0;
+        // handle keypresses
 
-    
+        for e in crate::config::KEYBINDINGS {
+            let mask = e.0;
+            let key = configkey_to_key(&e.1);
+            let action = e.2;
+
+            if is_pressed((keypress, keystate), key, mask) {
+                action(&e.3);
+            }
+        }
         debug!("Keypress value: {}", keypress);
         logf(format!("keypress value: {}", keypress).as_str());
     }
