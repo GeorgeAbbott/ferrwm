@@ -1,7 +1,5 @@
 #![allow(unused_variables)]
 // Modules
-// mod structs;
-// mod tagmasks;
 mod event_handlers;
 mod enums;
 mod consts;
@@ -13,27 +11,24 @@ mod tag;
 mod client;
 mod config;
 
-
 // Usings
 use std::env;
 use die::die;
 use openbsd::pledge;
-use wm::WindowManager;
-use crate::drawable::Draw;
 #[allow(unused_imports)]
 use log::{debug, error, info, warn, trace};
+
+// crate
+use wm::WindowManager;
+use drawable::Draw;
 use utils::logf;
 
-/* X11 */
+// X11 
 use x11rb::connection::Connection;
-use x11rb::protocol::randr::MonitorInfo;
 use x11rb::protocol::xproto::{Atom, Screen, ConnectionExt, WindowClass, CreateWindowAux, CW, ChangeWindowAttributesAux, create_window, EventMask, change_property, change_window_attributes};
 use x11rb::rust_connection::RustConnection;
 
-// Alias
-type Monitor = MonitorInfo; // not sure whether monitor info correct struct 
-
-
+#[allow(dead_code)]
 struct Environment {
     pub status_text: String,// TODO: check ownership: String or &'a str? 
     pub screen: i32,
@@ -58,8 +53,6 @@ fn setup(conn: &RustConnection, screen_num: usize) {
     let draw = Draw::new(conn, screen_num, root, screen_width, screen_height, screen_depth);
     // let fontset_create_result = draw.create_fontset(fonts);
 
-    // Get SUBSTRUCTURE_NOTIFY and SUBSTRUCTURE_REDIRECT; will error if another
-    // window manager is running.
     let mask =
           EventMask::SUBSTRUCTURE_REDIRECT
         | EventMask::SUBSTRUCTURE_NOTIFY
@@ -80,25 +73,10 @@ fn setup(conn: &RustConnection, screen_num: usize) {
         }
 
     let wm = WindowManager::new(conn, screen_num);
-
-    // let font = drawable::Font::new(&drawable, 
-    //                                config::FONTS); // TODO: replace w/ Fnt::new
-    // if font.is_none() {
-    //     die!("no fonts could be loaded.");
-    // } 
-    // let font = font.unwrap();
-
-
-    // let lrpad = drawable.fonts.height; // TODO: make these public
-
-    // let bar_height = drawable.fonts.height + 2; // will not make global but instead pass to every func that needs it
-    // // updategeom(); // TODO
-    // 
-    // /* init atoms */
-    // todo!();
-
+    wm.run_event_loop();
 }
 
+#[allow(dead_code)]
 fn scan() {
 }
 

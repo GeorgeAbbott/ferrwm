@@ -57,7 +57,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         };
     }
 
-    pub fn wait_event(&self) {
+    pub fn run_event_loop(&self) {
         while let Ok(event) = self.conn.wait_for_event() {
             self.handle_event(event);
         }
