@@ -35,6 +35,7 @@ pub struct WindowManager<'wm, 'rc> {
     tags: Vec<Tag<'wm>>,
     clients: Vec<Client>,
     status_text: String, 
+    running: bool,
 }
 
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
@@ -51,7 +52,13 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             tags, 
             clients: Vec::new(),
             status_text: "".to_string(),
+            running: true,
         }
+    }
+
+    // I think this kind of implementation might cause issues with borrowck.
+    pub fn quit(&mut self) {
+        running = false;
     }
 
     fn handle_event(&self, event: Event) {
@@ -76,6 +83,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
     pub fn run_event_loop(&self) {
         while let Ok(event) = self.conn.wait_for_event() {
+            if !running { break; } 
             self.handle_event(event);
         }
     }
@@ -113,6 +121,37 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
         // written like this so the warnings will stop hassling me, think this 
         // handle keypresses
+        // Potential actions: 
+        // spawn; togglebar; focusstack; incnmaster; setmfact; zoom; view;
+        // killclient; setlayout; togglefloating; tag; focusmon; tagmon; quit.
+        /*
+         * focusstack: needs selmon, which presumably is managed by wm?
+         * incnmaster: no state, but calls arrange(selmon) 
+         * setmfact: again, uses selmon. 
+         * zoom: again, selmon
+         * view: again selmon
+         * killclient: just uses selmon to check something selected else 
+         * returns, and calls sendevent(selmon->sel, wmatom[WMDelete]) 
+         * otherwise a bunch of X calls to presumably force kill it 
+         *     sendevent: won't be hard to implement. Only X calls are 
+         *     XGetWMProtocols, which cannot find an xcb equivalent for yet, and 
+         *     XSendEvent -> xcb_send_event. 
+         *
+         * setlayout: only needs arg and selmon
+         * togglefloating: only needs selmon
+         * tag: only needs selmon. This is what assigned a window to a tag 
+         * (or indeed, to multiple tags). This will definitely need to be in 
+         * WindowManager class as it will need to add it to the Tag struct.
+         * e.g. something like tag[3].assign(&client[n])
+         * focusmon: access to mons, dirtomon and selmon (dirtomon: only 
+         * mons and selmon)
+         * tagmon: selmon and mons + sendmon + dirtomon
+         * sendmon sends a client to a target monitor
+         * quit: just sets running to zero
+         * tf. implement these on WindowManager. 
+         * How do we want multiple monitors to work? 
+         */
+
 
         for e in crate::config::KEYBINDINGS {
             let mask = e.0;
