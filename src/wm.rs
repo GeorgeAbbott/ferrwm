@@ -6,6 +6,7 @@ use x11rb::rust_connection::RustConnection;
 use x11rb::protocol::xproto::get_keyboard_mapping;
 
 use crate::config;
+use crate::monitor::Monitor;
 use crate::tag::Tag;
 use crate::client::Client;
 use crate::utils::{logf, is_pressed, configkey_to_key};
@@ -32,10 +33,11 @@ use x11rb::protocol::
 pub struct WindowManager<'wm, 'rc> {
     conn: &'rc RustConnection,
     screen_num: usize,
-    tags: Vec<Tag<'wm>>,
-    clients: Vec<Client>,
+    // tags: Vec<Tag<'wm>>,
+    // clients: Vec<Client>,
     status_text: String, 
     running: bool,
+    monitors: Vec<Monitor>,
 }
 
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
@@ -46,19 +48,23 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             tags.push(Tag::new(tag));
         }
 
+        let mut monitors = Vec::new();
+        // TODO: populate with monitors
+
         Self {
             conn, 
             screen_num,
-            tags, 
-            clients: Vec::new(),
+            //  tags, 
+            //  clients: Vec::new(),
             status_text: "".to_string(),
             running: true,
+            monitors,
         }
     }
 
     // I think this kind of implementation might cause issues with borrowck.
     pub fn quit(&mut self) {
-        running = false;
+        self.running = false;
     }
 
     fn handle_event(&self, event: Event) {
@@ -83,7 +89,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
     pub fn run_event_loop(&self) {
         while let Ok(event) = self.conn.wait_for_event() {
-            if !running { break; } 
+            if !self.running { break; } 
             self.handle_event(event);
         }
     }

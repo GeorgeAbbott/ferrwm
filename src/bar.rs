@@ -1,7 +1,7 @@
 use x11rb::{rust_connection::RustConnection, connection::Connection, protocol::{xproto::{Screen, map_window, create_window, WindowClass, Visualid, CreateWindowAux}}, COPY_DEPTH_FROM_PARENT};
 
 // Represent the bar. ATM a really bad API but I want to test it a little.
-struct Bar<'a> {
+pub struct Bar<'a> {
     conn: &'a RustConnection,
     id_bar: u32,
     id_parent: u32,

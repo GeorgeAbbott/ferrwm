@@ -1,6 +1,6 @@
 #![allow(unused_variables)]
 // Modules
-mod event_handlers;
+mod geom;
 mod enums;
 mod consts;
 mod drawable;
@@ -10,6 +10,7 @@ mod wm;
 mod tag;
 mod client;
 mod config;
+mod monitor;
 
 // Usings
 use std::env;
