@@ -1,4 +1,5 @@
-use x11rb::{rust_connection::RustConnection, protocol::xproto::{Window, Drawable, GC, create_pixmap, create_gc, CreateGCAux, free_pixmap, free_gc}, connection::Connection};
+use x11rb::{rust_connection::RustConnection, protocol::xproto::{create_pixmap, create_gc,
+CreateGCAux, free_pixmap, free_gc}, connection::Connection};
 
 
 

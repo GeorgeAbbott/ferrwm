@@ -10,7 +10,7 @@ use crate::{enums::{BarPosition}, utils::{Key, logf}};
 pub const BORDERPX: i32             = 1;    /* border pixel of windows */
 pub const GAPPX: i32                = 24;   /* gaps between windows */
 pub const SNAP: i32                 = 32;   /* snap pixel */
-pub const SHOW_BAR: bool            = true;
+pub const HIDE_BAR: bool            = false;/* whether to by default hide bar */
 pub const BAR_POSITION: BarPosition = BarPosition::Top;
 
 pub const FONTS: &[&str]            = &["Liberation Mono:size=11"];
@@ -45,7 +45,8 @@ pub const KEYBINDINGS: &[Keybd] = &[
 
 
 
-
+// spawn, togglebar, focusstack, incnmaster, setmfact, zoom, view, 
+// killclient, setlayout, togglefloating, tag, focusmon, tagmon, quit.
 
 
 

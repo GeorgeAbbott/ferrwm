@@ -43,6 +43,9 @@ pub struct WindowManager<'wm, 'rc> {
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn new(conn: &'rc RustConnection, screen_num: usize) -> Self {
         let mut tags = Vec::new();
+        let k = 12; 
+        let j = k + 30;
+        let q = j - 41;
 
         for tag in config::TAGS {
             tags.push(Tag::new(tag));
