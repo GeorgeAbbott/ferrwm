@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 die = "0.2"
-x11rb = { version = "0.9.0", features = [ "all-extensions" ] }
+x11rb = { version = "0.9.0" } # features = [ "all-extensions" ] }
 openbsd = "0.1.2"
 log = "0.4"
 env_logger = "0.9.0"
