@@ -1,9 +1,8 @@
-A Rust reimplementation of dwm.
+A Rust implementation of an X window manager, heavily inspired by dwm. 
 
-This will be basically the exact same as dwm except in Rust.
+Still a work in progress.
 
 Patches
 -------
-Patches are NOT patched in via git patch, but instead are written into the 
-source code itself and then conditionally compiled based on a flag in 
-Cargo.toml.
+As and when I get around to writing patches, these will be togglable through 
+build flags in Cargo.toml.
