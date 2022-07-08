@@ -37,7 +37,7 @@ pub struct WindowManager<'wm, 'rc> {
     // clients: Vec<Client>,
     status_text: String, 
     running: bool,
-    monitors: Vec<Monitor>,
+    monitors: Vec<Monitor<'wm>>,
 }
 
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
