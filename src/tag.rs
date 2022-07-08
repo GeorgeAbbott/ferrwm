@@ -27,19 +27,19 @@ impl Tags {
         }
     }
 
-    const fn is_set(&self, tag: impl Into<i32>) -> Result<bool, ()> {
+    const fn is_set(&self, tag: i32) -> Result<bool, ()> {
         if tag <= 0 || tag > 32 {
             Err(())
         } else {
-            Ok(self.tags & (1 << tag))
+            Ok((self.tags & (1 << tag)) != 0)
         }
     }
 
-    const fn set(&mut self, tag: impl Into<i32>) {
+    fn set(&mut self, tag: i32) {
         self.tags &= tag;
     }
 
-    const fn unset(&mut self, tag: impl Into<i32>) {
+    fn unset(&mut self, tag: i32) {
         self.tags &= !tag;
     }
 }
