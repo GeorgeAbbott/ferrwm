@@ -1,9 +1,10 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
-use x11rb::protocol::xproto::KeyButMask;
+use x11rb::protocol::xproto::{KeyButMask, Keysym, Keycode};
 
 /* All configurations can be changed here to fit your preferences. */
-use crate::{enums::{BarPosition}, utils::{Key, logf}};
+use crate::{enums::{BarPosition}, utils::{Key, logf, key_to_cfgkey}};
+use crate::wm::WindowManager;
 
 
 // Appearance
@@ -32,27 +33,37 @@ pub fn testfn(arg: &Argument) {
 }
 
 // Keybindings
-pub struct Keybd(pub KeyButMask, pub Key, pub fn(&Argument) -> (), pub Argument);
 pub enum Argument {
     Str(&'static str),
     Int(i32),
 }
-pub const KEYBINDINGS: &[Keybd] = &[
-    Keybd(KeyButMask::SHIFT, Key::Q, testfn, Argument::Str("Q")),
-    Keybd(KeyButMask::CONTROL, Key::W, testfn, Argument::Str("W")),
-];
 
+// Keybindings.
+impl<'wm, 'rc> WindowManager<'wm, 'rc> {
+    pub fn act_on_keypress(&mut self, mask: KeyButMask, key: Keycode) {
+        const CTRL: KeyButMask  = KeyButMask::CONTROL;
+        const SHIFT: KeyButMask = KeyButMask::SHIFT;
+        const META: KeyButMask  = KeyButMask::MOD1;
+        #[allow(non_snake_case)]
+        let shift_ctrl = KeyButMask::CONTROL | KeyButMask::SHIFT;
+        #[allow(non_snake_case)]
+        let shift_meta = KeyButMask::MOD1    | KeyButMask::SHIFT;
 
+        // NOTE: this name is actually wrong. This is not a keysym, I just 
+        // want it to be in the future when I get keysyms working. I think.
+        let keysym = key_to_cfgkey(key); 
 
+        match (mask, keysym) {
+            // Add in keybindings here.
+            (shift_meta, Key::Q) => self.quit(),
+            // TODO: why is this an unreachable pattern? I believe this should 
+            // match just fine.
+            (SHIFT, Key::Q) => testfn(&Argument::Str("Q")),
+            (CTRL, Key::W)  => testfn(&Argument::Str("W")),
+            _ => logf("uhoh, an unrecognized keypress"),
+        }
+    }
+}
 
 // spawn, togglebar, focusstack, incnmaster, setmfact, zoom, view, 
 // killclient, setlayout, togglefloating, tag, focusmon, tagmon, quit.
-
-
-
-
-
-
-
-
-

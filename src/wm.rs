@@ -3,13 +3,13 @@ use log::{trace, debug};
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::rust_connection::RustConnection;
-use x11rb::protocol::xproto::get_keyboard_mapping;
+use x11rb::protocol::xproto::{get_keyboard_mapping, KeyButMask};
 
 use crate::config;
 use crate::monitor::Monitor;
 use crate::tag::Tag;
 use crate::client::Client;
-use crate::utils::{logf, is_pressed, configkey_to_key};
+use crate::utils::{logf};
 
 // Events
 use x11rb::protocol::
@@ -43,9 +43,6 @@ pub struct WindowManager<'wm, 'rc> {
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn new(conn: &'rc RustConnection, screen_num: usize) -> Self {
         let mut tags = Vec::new();
-        let k = 12; 
-        let j = k + 30;
-        let q = j - 41;
 
         for tag in config::TAGS {
             tags.push(Tag::new(tag));
@@ -70,7 +67,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         self.running = false;
     }
 
-    fn handle_event(&self, event: Event) {
+    fn handle_event(&mut self, event: Event) {
         match event {
             Event::ButtonPress(e) => self.button_press(e),
             Event::ClientMessage(e) => self.client_message(e),
@@ -90,7 +87,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         };
     }
 
-    pub fn run_event_loop(&self) {
+    pub fn run_event_loop(&mut self) {
         while let Ok(event) = self.conn.wait_for_event() {
             if !self.running { break; } 
             self.handle_event(event);
@@ -113,15 +110,17 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn enter_notify(&self, event: EnterNotifyEvent) {}
     pub fn expose(&self, event: ExposeEvent) {}
     pub fn focus_in(&self, event: FocusInEvent) {}
-    pub fn key_press(&self, event: KeyPressEvent) {
+    pub fn key_press(&mut self, event: KeyPressEvent) {
         trace!("Entered key_press");
         logf("Entered key_press");
         
         let keypress: u8 = event.detail;
         let keystate = event.state; // for my reference, this is a mask of 
-                                // mods at the time. It's over at 
-                                // xcb.freedesktop.org/tutorial/events
-                                // some halfway down
+                                    // mods at the time. It's over at 
+                                    // xcb.freedesktop.org/tutorial/events
+                                    // some halfway down
+
+        // FIXME: what is this let reply for? 
         let reply = get_keyboard_mapping(self.conn, keypress, 1)
             .unwrap()
             .reply()
@@ -161,16 +160,8 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
          * How do we want multiple monitors to work? 
          */
 
+        self.act_on_keypress(KeyButMask::from(keystate), keypress);
 
-        for e in crate::config::KEYBINDINGS {
-            let mask = e.0;
-            let key = configkey_to_key(&e.1);
-            let action = e.2;
-
-            if is_pressed((keypress, keystate), key, mask) {
-                action(&e.3);
-            }
-        }
         debug!("Keypress value: {}", keypress);
         logf(format!("keypress value: {}", keypress).as_str());
     }
