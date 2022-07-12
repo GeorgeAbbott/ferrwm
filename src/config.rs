@@ -44,9 +44,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         const CTRL: KeyButMask  = KeyButMask::CONTROL;
         const SHIFT: KeyButMask = KeyButMask::SHIFT;
         const META: KeyButMask  = KeyButMask::MOD1;
-        #[allow(non_snake_case)]
         let shift_ctrl = KeyButMask::CONTROL | KeyButMask::SHIFT;
-        #[allow(non_snake_case)]
         let shift_meta = KeyButMask::MOD1    | KeyButMask::SHIFT;
 
         // NOTE: this name is actually wrong. This is not a keysym, I just 
@@ -56,10 +54,11 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         match (mask, keysym) {
             // Add in keybindings here.
             (shift_meta, Key::Q) => self.quit(),
-            // TODO: why is this an unreachable pattern? I believe this should 
+            // FIXME: why is this an unreachable pattern? I believe this should
             // match just fine.
-            (SHIFT, Key::Q) => testfn(&Argument::Str("Q")),
+            (CTRL, Key::Q) => testfn(&Argument::Str("Q")),
             (CTRL, Key::W)  => testfn(&Argument::Str("W")),
+            (CTRL, Key::E)  => self.spawn_window("dmenu"),
             _ => logf("uhoh, an unrecognized keypress"),
         }
     }

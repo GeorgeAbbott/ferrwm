@@ -15,7 +15,7 @@ impl<'c> Tag<'c> {
     }
 }
 
-// A tag bitmask.
+/// A tag bitmask. Held by clients to state which tags they are attached to.
 pub struct Tags {
     tags: i32,
 }
@@ -35,11 +35,11 @@ impl Tags {
         }
     }
 
-    fn set(&mut self, tag: i32) {
+    pub fn set(&mut self, tag: i32) {
         self.tags &= tag;
     }
 
-    fn unset(&mut self, tag: i32) {
+    pub fn unset(&mut self, tag: i32) {
         self.tags &= !tag;
     }
 }

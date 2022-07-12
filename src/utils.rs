@@ -8,6 +8,7 @@ pub enum Key {
     Invalid,
     Q,
     W,
+    E,
 }
 
 pub fn logf(string: &str) {
@@ -21,6 +22,7 @@ pub fn key_to_cfgkey(key: Keycode) -> Key {
     match key {
         24 => Key::Q,
         25 => Key::W,
+        26 => Key::E,
         _ =>  Key::Invalid,
     }
 }

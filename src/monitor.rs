@@ -42,4 +42,18 @@ impl<'rc> Monitor<'rc> {
             selected_client: 0, // TODO: find
         }
     }
+
+    pub fn add_client(&mut self, c: Client) {
+        self.clients.push(c);
+    }
+
+    #[allow(dead_code)]
+    pub fn get_sel_client(&self) -> &Client {
+        &self.clients[self.selected_client]
+    }
+
+    #[allow(dead_code)]
+    pub fn get_sel_client_mut(&mut self) -> &mut Client {
+        &mut self.clients[self.selected_client]
+    }
 }
