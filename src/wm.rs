@@ -64,6 +64,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     }
 
     pub fn quit(&mut self) {
+        logf("quit() called");
         self.running = false;
     }
 
