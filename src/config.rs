@@ -26,18 +26,6 @@ pub const NUM_COLOR: usize          = 3; // DO NOT CHANGE
 
 pub const TAGS: &[&str] = &[ "1", "2", "3", "4", "5", "6", "7", "8", "9", ];
 
-pub fn testfn(arg: &Argument) {
-    if let Argument::Str(s) = arg {
-        logf(format!("You said {}", s).as_str());
-    }
-}
-
-// Keybindings
-pub enum Argument {
-    Str(&'static str),
-    Int(i32),
-}
-
 // Keybindings.
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn act_on_keypress(&mut self, mask: KeyButMask, key: Keycode) {
@@ -57,9 +45,9 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             (shift_meta, Key::Q) => self.quit(),
             // FIXME: why is this an unreachable pattern? I believe this should
             // match just fine.
-            (ctrl, Key::Q)  => testfn(&Argument::Str("Q")),
-            (ctrl, Key::W)  => testfn(&Argument::Str("W")),
+            (ctrl, Key::Q)  => self.spawn_window("firefox"),
             (ctrl, Key::E)  => self.spawn_window("dmenu"),
+            (ctrl, Key::W)  => self.toggle_bar(),
             _ => logf("uhoh, an unrecognized keypress"),
         }
     }

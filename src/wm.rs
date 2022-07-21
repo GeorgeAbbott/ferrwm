@@ -120,6 +120,20 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         self.add_client(c);
     }
 
+    /// Toggle whether or not the bar on the current monitor. is visible or not. 
+    pub fn toggle_bar(&mut self) {
+        logf("toggle_bar");
+        self.monitors[self.current_mon].toggle_bar();
+        // Is there anything else I need to do here? Refresh the screen?
+    }
+
+    pub fn toggle_all_bars(&mut self) {
+        logf("toggle_all_bars");
+        for m in self.monitors {
+            m.toggle_bar();
+        }
+    }
+
     #[allow(dead_code)]
     /// Assign the passed tag to the currently selected client on the currently 
     /// selected monitor.
@@ -141,7 +155,6 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn expose(&self, event: ExposeEvent) {}
     pub fn focus_in(&self, event: FocusInEvent) {}
     pub fn key_press(&mut self, event: KeyPressEvent) {
-        trace!("Entered key_press");
         logf("Entered key_press");
         
         let keypress: u8 = event.detail;
@@ -158,7 +171,6 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
         self.act_on_keypress(KeyButMask::from(keystate), keypress);
 
-        debug!("Keypress value: {}", keypress);
         logf(format!("keypress value: {}", keypress).as_str());
     }
     pub fn mapping_notify(&self, event: MappingNotifyEvent) {}

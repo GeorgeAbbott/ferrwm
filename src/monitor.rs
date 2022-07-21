@@ -46,6 +46,12 @@ impl<'rc> Monitor<'rc> {
     }
 
     #[allow(dead_code)]
+    pub fn toggle_bar(&mut self) {
+        self.hide_bar = !self.hide_bar;
+        // Is there anything else to do here? 
+    }
+
+    #[allow(dead_code)]
     pub fn get_sel_client(&self) -> &Client {
         &self.clients[self.selected_client]
     }
