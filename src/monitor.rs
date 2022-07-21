@@ -2,7 +2,7 @@ use x11rb::protocol::xproto::Screen;
 use x11rb::rust_connection::RustConnection;
 
 use crate::enums::BarPosition;
-use crate::geom::{Xy, Wh};
+use crate::geom::Rect;
 use crate::bar::Bar;
 use crate::client::Client;
 use crate::tag::Tags;
@@ -14,8 +14,7 @@ use crate::config::BAR_POSITION;
 pub struct Monitor<'rc> {
     id: i32,
     bar: Bar<'rc>, 
-    xy: Xy,
-    wh: Wh,
+    xywh: Rect,
     selected_tags: Tags, 
     hide_bar: bool,
     bar_pos: BarPosition,
@@ -33,8 +32,7 @@ impl<'rc> Monitor<'rc> {
         Self {
             id, 
             bar,
-            xy: Xy::new(0, 0), // TODO: find
-            wh: Wh::new(0, 0), // TODO: find 
+            xywh: Rect::new_zeroed(), // TODO: find. this is x, y, w, h in dwm
             selected_tags: tags,
             hide_bar: HIDE_BAR,
             bar_pos: BAR_POSITION,

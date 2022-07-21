@@ -41,9 +41,9 @@ pub enum Argument {
 // Keybindings.
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn act_on_keypress(&mut self, mask: KeyButMask, key: Keycode) {
-        const CTRL: KeyButMask  = KeyButMask::CONTROL;
-        const SHIFT: KeyButMask = KeyButMask::SHIFT;
-        const META: KeyButMask  = KeyButMask::MOD1;
+        let ctrl  = KeyButMask::CONTROL;
+        let shift = KeyButMask::SHIFT;
+        let meta  = KeyButMask::MOD1;
         let shift_ctrl = KeyButMask::CONTROL | KeyButMask::SHIFT;
         let shift_meta = KeyButMask::MOD1    | KeyButMask::SHIFT;
 
@@ -53,12 +53,13 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
         match (mask, keysym) {
             // Add in keybindings here.
+            // FIXME: This is being called on any keypress of Q. Why?
             (shift_meta, Key::Q) => self.quit(),
             // FIXME: why is this an unreachable pattern? I believe this should
             // match just fine.
-            (CTRL, Key::Q) => testfn(&Argument::Str("Q")),
-            (CTRL, Key::W)  => testfn(&Argument::Str("W")),
-            (CTRL, Key::E)  => self.spawn_window("dmenu"),
+            (ctrl, Key::Q)  => testfn(&Argument::Str("Q")),
+            (ctrl, Key::W)  => testfn(&Argument::Str("W")),
+            (ctrl, Key::E)  => self.spawn_window("dmenu"),
             _ => logf("uhoh, an unrecognized keypress"),
         }
     }

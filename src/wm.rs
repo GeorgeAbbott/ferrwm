@@ -20,10 +20,6 @@ use x11rb::protocol::
         UnmapNotifyEvent,
     };
 
-
-
-
-
 // Represents the window manager itself. This holds 
 // a Vec<Tag> which represent tags, as well as a 
 // Vec<Client>. Each Tag then itself holds a 
@@ -124,7 +120,9 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         self.add_client(c);
     }
 
-    /// Assign the passed tag to the selected client on the selected monitor.
+    #[allow(dead_code)]
+    /// Assign the passed tag to the currently selected client on the currently 
+    /// selected monitor.
     pub fn assign_tag(&mut self, tag: i32) {
         self.monitors[self.current_mon]
             .get_sel_client_mut()
@@ -153,10 +151,10 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
                                     // some halfway down
 
         // FIXME: what is this let reply for? 
-        let reply = get_keyboard_mapping(self.conn, keypress, 1)
-            .unwrap()
-            .reply()
-            .unwrap();
+        // let reply = get_keyboard_mapping(self.conn, keypress, 1)
+        //     .unwrap()
+        //     .reply()
+        //     .unwrap();
 
         self.act_on_keypress(KeyButMask::from(keystate), keypress);
 

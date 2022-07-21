@@ -28,19 +28,6 @@ use x11rb::protocol::xproto::ChangeWindowAttributesAux;
 use x11rb::protocol::xproto::{change_window_attributes, EventMask};
 use x11rb::rust_connection::RustConnection;
 
-#[allow(dead_code)]
-struct Environment {
-    pub status_text: String, // TODO: check ownership: String or &'a str?
-    pub screen: i32,
-    pub screen_width: i32,
-    pub screen_height: i32,
-    pub bar_height: i32,
-    pub bar_lw: i32,     // TODO: what is blw in original?
-    pub lr_padding: i32, // sum of left and right padding for text
-    // xerrorxlib - ???
-    pub numlock_mask: i32,
-}
-
 fn setup(conn: &RustConnection, screen_num: usize) {
     /* init screen */
     let screen = &conn.setup().roots[screen_num];

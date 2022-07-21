@@ -27,6 +27,7 @@ impl Tags {
         }
     }
 
+    #[allow(dead_code)]
     const fn is_set(&self, tag: i32) -> Result<bool, ()> {
         if tag <= 0 || tag > 32 {
             Err(())
@@ -35,10 +36,12 @@ impl Tags {
         }
     }
 
+    #[allow(dead_code)]
     pub fn set(&mut self, tag: i32) {
         self.tags &= tag;
     }
 
+    #[allow(dead_code)]
     pub fn unset(&mut self, tag: i32) {
         self.tags &= !tag;
     }
