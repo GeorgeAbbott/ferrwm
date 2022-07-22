@@ -10,6 +10,7 @@ use crate::monitor::Monitor;
 use crate::tag::Tag;
 use crate::client::Client;
 use crate::utils::logf;
+use crate::consts;
 
 // Events
 use x11rb::protocol::
@@ -103,7 +104,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn update_status_text(&mut self, text: impl Into<String>) { 
         let text = text.into();
         if text == "" {
-            self.status_text = format!("ferrwm: {}", crate::consts::VERSION);
+            self.status_text = format!("ferrwm: {}", consts::VERSION);
         } else {
             self.status_text = text;
         }
@@ -127,9 +128,10 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         // Is there anything else I need to do here? Refresh the screen?
     }
 
+    #[allow(dead_code)]
     pub fn toggle_all_bars(&mut self) {
         logf("toggle_all_bars");
-        for m in self.monitors {
+        for m in self.monitors.iter_mut() {
             m.toggle_bar();
         }
     }
