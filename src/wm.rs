@@ -9,7 +9,7 @@ use crate::config;
 use crate::monitor::Monitor;
 use crate::tag::Tag;
 use crate::client::Client;
-use crate::utils::logf;
+use crate::util::logf;
 use crate::consts;
 
 // Events

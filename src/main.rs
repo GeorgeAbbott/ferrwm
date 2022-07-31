@@ -9,7 +9,7 @@ mod enums;
 mod geom;
 mod monitor;
 mod tag;
-mod utils;
+mod util;
 mod wm;
 
 // Usings
@@ -19,7 +19,7 @@ use std::env;
 
 // crate
 use drawable::Draw;
-use utils::logf;
+use util::logf;
 use wm::WindowManager;
 
 // X11

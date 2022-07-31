@@ -3,7 +3,7 @@
 use x11rb::protocol::xproto::{KeyButMask, Keysym, Keycode};
 
 /* All configurations can be changed here to fit your preferences. */
-use crate::{enums::{BarPosition}, utils::{Key, logf, key_to_cfgkey}};
+use crate::{enums::{BarPosition}, util::{Key, logf, key_to_cfgkey}};
 use crate::wm::WindowManager;
 
 
