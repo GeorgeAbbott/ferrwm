@@ -16,7 +16,7 @@ pub struct Monitor<'rc> {
     bar: Bar<'rc>, 
     xywh: Rect,
     selected_tags: Tags, 
-    hide_bar: bool,
+    bar_hidden: bool,
     bar_pos: BarPosition,
     clients: Vec<Client>,
     selected_client: usize,  // index into clients
@@ -47,8 +47,17 @@ impl<'rc> Monitor<'rc> {
 
     #[allow(dead_code)]
     pub fn toggle_bar(&mut self) {
-        self.hide_bar = !self.hide_bar;
-        // Is there anything else to do here? 
+        self.bar_hidden = !self.bar_hidden;
+    }
+
+    #[allow(dead_code)]
+    pub fn hide_bar(&mut self) {
+        self.bar_hidden = true;
+    }
+
+    #[allow(dead_code)]
+    pub fn show_bar(&mut self) {
+        self.bar_hidden = false;
     }
 
     #[allow(dead_code)]
