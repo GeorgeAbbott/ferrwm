@@ -14,7 +14,7 @@ use crate::config::BAR_POSITION;
 pub struct Monitor<'rc> {
     id: i32,
     bar: Bar<'rc>, 
-    xywh: Rect,
+    rect: Rect,
     selected_tags: Tags, 
     bar_hidden: bool,
     bar_pos: BarPosition,
@@ -32,7 +32,7 @@ impl<'rc> Monitor<'rc> {
         Self {
             id, 
             bar,
-            xywh: Rect::new_zeroed(), // TODO: find. this is x, y, w, h in dwm
+            rect: Rect::new_zeroed(), // TODO: find. this is x, y, w, h in dwm
             selected_tags: tags,
             hide_bar: HIDE_BAR,
             bar_pos: BAR_POSITION,
