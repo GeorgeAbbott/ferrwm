@@ -200,6 +200,11 @@ applyrules(Client *c)
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
+// This just does arithmetic so not difficult to implement, but 
+// will also need to get monitor from client. Therefore each 
+// client would need a Weak<Monitor> to the parent, maybe? 
+// Also, it returns an int for whether one of the passed x/y/w/h does not match the passed client
+// x/y/w/h. 
 int
 applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
 {
@@ -1097,6 +1102,10 @@ movemouse(const Arg *arg)
 	}
 }
 
+// I imagine this gets the next client in the stack, given a 
+// given client. How would I do this? I imagine this would need 
+// to be implemented on Monitor, e.g. 
+// Monitor::get_next_tiled_client.
 Client *
 nexttiled(Client *c)
 {
@@ -1172,6 +1181,8 @@ recttomon(int x, int y, int w, int h)
 	return r;
 }
 
+// What does tis do? It gets applysizehints and then calls 
+// resizeclient (Client::resize.)
 void
 resize(Client *c, int x, int y, int w, int h, int interact)
 {
@@ -1179,6 +1190,7 @@ resize(Client *c, int x, int y, int w, int h, int interact)
 		resizeclient(c, x, y, w, h);
 }
 
+Client::resize.
 void
 resizeclient(Client *c, int x, int y, int w, int h)
 {
@@ -1314,6 +1326,7 @@ scan(void)
 	}
 }
 
+// WindowManager::move_client. TODO: add to Rust project.
 void
 sendmon(Client *c, Monitor *m)
 {
@@ -1330,6 +1343,7 @@ sendmon(Client *c, Monitor *m)
 	arrange(NULL);
 }
 
+// Client::set_state.
 void
 setclientstate(Client *c, long state)
 {
@@ -1339,6 +1353,8 @@ setclientstate(Client *c, long state)
 		PropModeReplace, (unsigned char *)data, 2);
 }
 
+
+// Client::send_event.
 int
 sendevent(Client *c, Atom proto)
 {
@@ -1364,6 +1380,7 @@ sendevent(Client *c, Atom proto)
 	return exists;
 }
 
+// Client::set_focus.
 void
 setfocus(Client *c)
 {
@@ -1995,7 +2012,6 @@ xerror(Display *dpy, XErrorEvent *ee)
 	|| (ee->request_code == X_PolyText8 && ee->error_code == BadDrawable)
 	|| (ee->request_code == X_PolyFillRectangle && ee->error_code == BadDrawable)
 	|| (ee->request_code == X_PolySegment && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_ConfigureWindow && ee->error_code == BadMatch)
 	|| (ee->request_code == X_GrabButton && ee->error_code == BadAccess)
 	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
 	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
