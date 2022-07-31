@@ -45,7 +45,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             tags.push(Tag::new(tag));
         }
 
-        let mut monitors = Vec::new();
+        let mut monitors = Vec::<Monitor>::new();
         let current_mon = 0;
         // TODO: populate with monitors
 
@@ -129,6 +129,8 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     }
 
     #[allow(dead_code)]
+    /// Toggle the bar on all monitors. This does not set all bars to on or off 
+    /// but rather simply calls toggle_bar() on all monitors, inverting them. 
     pub fn toggle_all_bars(&mut self) {
         logf("toggle_all_bars");
         for m in self.monitors.iter_mut() {
@@ -156,6 +158,8 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn enter_notify(&self, event: EnterNotifyEvent) {}
     pub fn expose(&self, event: ExposeEvent) {}
     pub fn focus_in(&self, event: FocusInEvent) {}
+
+    /// Handle a key press event.
     pub fn key_press(&mut self, event: KeyPressEvent) {
         logf("Entered key_press");
         
