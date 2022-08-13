@@ -179,7 +179,6 @@ applyrules(Client *c)
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
-
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
 		if ((!r->title || strstr(c->name, r->title))
@@ -293,7 +292,8 @@ arrangemon(Monitor *m)
 		m->lt[m->sellt]->arrange(m);
 }
 
-// -> Client::attach(&mut self)
+// If just attaching a client to a monitor, then implement on Monitor. 
+// Monitor::add_client. 
 void
 attach(Client *c)
 {
@@ -301,7 +301,7 @@ attach(Client *c)
 	c->mon->clients = c;
 }
 
-// -> Client::attach_stack(&mut self)
+// Again, probably actually implement on the monitor. 
 void
 attachstack(Client *c)
 {
@@ -392,11 +392,6 @@ cleanup(void)
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 }
-
-void
-cleanupmon(Monitor *mon)
-{
-	Monitor *m;
 
 	if (mon == mons)
 		mons = mons->next;
@@ -528,6 +523,7 @@ configurerequest(XEvent *e)
 	XSync(dpy, False);
 }
 
+// Monitor::new(). 
 Monitor *
 createmon(void)
 {
@@ -536,6 +532,11 @@ createmon(void)
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
+	m->nmaster = nmaster;
+	m->showbar = showbar;
+	m->topbar = topbar;
+	m->lt[0] = &layouts[0];
+	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
@@ -593,6 +594,7 @@ dirtomon(int dir)
 	return m;
 }
 
+// Monitor::draw_bar(&self)
 void
 drawbar(Monitor *m)
 {
@@ -646,6 +648,7 @@ drawbar(Monitor *m)
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
+// WindowManager::draw_bars(&self)
 void
 drawbars(void)
 {
@@ -1288,6 +1291,7 @@ restack(Monitor *m)
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 }
 
+// WindowManager::run_event_loop.
 void
 run(void)
 {
@@ -1326,7 +1330,7 @@ scan(void)
 	}
 }
 
-// WindowManager::move_client. TODO: add to Rust project.
+// WindowManager::move_client. TODO: added but yet to be implemented.
 void
 sendmon(Client *c, Monitor *m)
 {
@@ -1521,6 +1525,7 @@ setup(void)
 }
 
 
+// Client::set_urgent(&mut self, urgent: bool) I reckon.
 void
 seturgent(Client *c, int urg)
 {
@@ -1560,6 +1565,7 @@ sigchld(int unused)
 	while (0 < waitpid(-1, NULL, WNOHANG));
 }
 
+// WindowManager::spawn_window(&mut self, window_name: impl Into<String>)
 void
 spawn(const Arg *arg)
 {
@@ -1623,6 +1629,7 @@ tile(Monitor *m)
 		}
 }
 
+// Monitor::toggle_bar(&mut self)
 void
 togglebar(const Arg *arg)
 {
@@ -1995,23 +2002,6 @@ wintomon(Window w)
 		return recttomon(x, y, 1, 1);
 	for (m = mons; m; m = m->next)
 		if (w == m->barwin)
-			return m;
-	if ((c = wintoclient(w)))
-		return c->mon;
-	return selmon;
-}
-
-/* There's no way to check accesses to destroyed windows, thus those cases are
- * ignored (especially on UnmapNotify's). Other types of errors call Xlibs
- * default error handler, which may call exit. */
-int
-xerror(Display *dpy, XErrorEvent *ee)
-{
-	if (ee->error_code == BadWindow
-	|| (ee->request_code == X_SetInputFocus && ee->error_code == BadMatch)
-	|| (ee->request_code == X_PolyText8 && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolyFillRectangle && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolySegment && ee->error_code == BadDrawable)
 	|| (ee->request_code == X_GrabButton && ee->error_code == BadAccess)
 	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
 	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
