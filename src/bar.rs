@@ -5,9 +5,12 @@ use x11rb::{
     COPY_DEPTH_FROM_PARENT,
 };
 
+use crate::monitor::Monitor;
+
 // Represent the bar. ATM a really bad API but I want to test it a little.
 pub struct Bar<'rc> {
     conn: &'rc RustConnection,
+    stext: String,
     id_bar: u32,
     id_parent: u32,
     width: u16,
@@ -22,6 +25,7 @@ impl<'rc> Bar<'rc> {
         let id_bar = conn.generate_id().expect("Bar::new - generate_id failed");
         Self {
             conn,
+            stext: "".to_string(),
             id_bar,
             id_parent: screen.root,
             width: screen.width_in_pixels,

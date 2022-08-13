@@ -31,7 +31,6 @@ pub struct WindowManager<'wm, 'rc> {
     conn: &'rc RustConnection,
     screen_num: usize,
     // tags: Vec<Tag<'wm>>, // This should be kept afaict, but ctbwwgt.
-    status_text: String, 
     running: bool,
     monitors: Vec<Monitor<'wm>>,
     current_mon: usize,
@@ -53,7 +52,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             conn, 
             screen_num,
             //  tags, 
-            status_text: "".to_string(),
+            // stext: "".to_string(),
             running: true,
             monitors,
             current_mon,
@@ -100,13 +99,22 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     // TODO: Also needs root_id: this can be gotten from screen_num but perhaps
     // store for convenience.
     #[allow(dead_code)]
-    /// Update the status text that appears in the top bar.
-    pub fn update_status_text(&mut self, text: impl Into<String>) { 
+    /// Update the status text that appears in the top bar on the chosen 
+    /// monitor; if the text is empty, then updates to "ferrwm: vernum".
+    pub fn update_stext(&mut self, monitor: usize, text: impl Into<String>) { 
         let text = text.into();
+        let mon = self.monitors[monitor];
         if text == "" {
-            self.status_text = format!("ferrwm: {}", consts::VERSION);
+            todo!(); 
         } else {
-            self.status_text = text;
+            todo!();
+        }
+    }
+
+    /// Redraw bars on all monitors.
+    pub fn draw_bars(&self) {
+        for m in self.monitors {
+            m.draw_bar();
         }
     }
 
@@ -146,6 +154,9 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             .get_sel_client_mut()
             .assign_tag(tag)
     }
+
+    /// TODO: do not reference Monitor by actual monitor but by number instead.
+    pub fn move_client(from: Monitor, to: Monitor, client: Client) { todo!(); }
 }
 
 // impl block for all event handling functions

@@ -1,23 +1,29 @@
-use x11rb::protocol::xproto::Atom;
+use x11rb::protocol::xproto::{Atom, change_property, PropMode, Window};
+use x11rb::rust_connection::RustConnection;
 
 use crate::tag::Tags;
 use crate::geom::Rect;
 
-pub struct Client {
+pub struct Client<'rc> {
+    conn: &'rc RustConnection,
     name: String, 
     dimensions: Rect,
     old_dimensions: Rect,
     tags: Tags,
+    urgent: bool,
+    window: Window, // TODO: add 
     // ... TODO: add
 }
 
-impl Client {
-    pub fn new(name: String) -> Self {
+impl<'rc> Client<'rc> {
+    pub fn new(conn: &RustConnection, name: String) -> Self {
         Self {
+            conn,
             name,
             dimensions: Rect::new_zeroed(), // TODO: maybe actually set?
             old_dimensions: Rect::new_zeroed(),
             tags: Tags::new(),
+            urgent: false,
         }
     }
 
@@ -41,8 +47,20 @@ impl Client {
     // TODO: check the above description is accurate.
     pub fn send_event(&self, proto: Atom) -> bool { todo!(); }
 
-    // TODO: document.
-    pub fn set_state(&mut self, state: i64) { todo!(); }
+    /// Set state. ATM a carbon-copy of C implementation, TODO verify. 
+    pub fn set_state(&mut self, state: i64) { 
+            change_property(self.conn, PropMode::REPLACE, self.window, 
+                            1, // [[wmatom[WMState]]], // what is in C, TODO: make into Rust
+                            1, // [[wmatom[WMState]]], 
+                            32, // Not quite sure why, seems a bit magic
+                            2, // length of data
+                            &[state, x11rb::NONE]);
+    }
+
+    /// Set whether window urgent or not. 
+    pub fn set_urgent(&mut self, urgent: bool) { 
+        todo!(); 
+    }
 
     /// Returns size hints, and whether any of these hints 
     /// are different to the client's size.
