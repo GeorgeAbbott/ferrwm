@@ -38,13 +38,15 @@ pub struct WindowManager<'wm, 'rc> {
 
 impl<'wm, 'rc> WindowManager<'wm, 'rc> {
     pub fn new(conn: &'rc RustConnection, screen_num: usize) -> Self {
-        let mut tags = Vec::new();
+        logf(format!("WindowManager::new -> screen_num: {}", screen_num).as_str());
 
+        let mut tags = Vec::<Tag>::new();
         for tag in config::TAGS {
             tags.push(Tag::new(tag));
         }
 
         let mut monitors = Vec::<Monitor>::new();
+        monitors.push(Monitor::new(conn, screen_num));
         let current_mon = 0;
         // TODO: populate with monitors
 

@@ -73,7 +73,7 @@ fn setup(conn: &RustConnection, screen_num: usize) {
 fn scan() {}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    logf("ferrwm started");
+    logf("--- begin ferrwm ---");
     let argv: Vec<String> = env::args().collect();
     let argc = argv.len();
 
@@ -93,6 +93,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     setup(&conn, screen_num);
     // scan();
     // cleanup();
-
+    
+    logf("---  end ferrwm  ---\n");
     Ok(())
 }
