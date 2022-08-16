@@ -423,6 +423,9 @@ clientmessage(XEvent *e)
 	}
 }
 
+// Take the info from Client and send it as a configure event to the actual 
+// window. 
+// Implement on Client: Client::configure_event(&self). 
 void
 configure(Client *c)
 {
@@ -523,7 +526,7 @@ configurerequest(XEvent *e)
 	XSync(dpy, False);
 }
 
-// Monitor::new(). 
+// Monitor::new(). The part missing really is the monitor number (m->num). 
 Monitor *
 createmon(void)
 {
@@ -537,6 +540,7 @@ createmon(void)
 	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
@@ -546,6 +550,7 @@ createmon(void)
 	return m;
 }
 
+// WindowManager::destroy_notify. 
 void
 destroynotify(XEvent *e)
 {
@@ -1693,6 +1698,8 @@ unfocus(Client *c, int setfocus)
 	}
 }
 
+// Seems to be a drop function for Client. This would be implemented on 
+// Monitor: Monitor::drop_client? 
 void
 unmanage(Client *c, int destroyed)
 {
@@ -1995,13 +2002,6 @@ Monitor *
 wintomon(Window w)
 {
 	int x, y;
-	Client *c;
-	Monitor *m;
-
-	if (w == root && getrootptr(&x, &y))
-		return recttomon(x, y, 1, 1);
-	for (m = mons; m; m = m->next)
-		if (w == m->barwin)
 	|| (ee->request_code == X_GrabButton && ee->error_code == BadAccess)
 	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
 	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
