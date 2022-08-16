@@ -1,7 +1,6 @@
 use std::fs::OpenOptions;
 use std::io::Write;
 
-use die::die;
 use x11rb::protocol::xproto::{Keycode, KeyButMask};
 
 pub enum Key {

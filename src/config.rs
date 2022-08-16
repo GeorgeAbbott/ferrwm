@@ -17,13 +17,13 @@ pub const BAR_POSITION: BarPosition = BarPosition::Top;
 pub const FONTS: &[&str]            = &["Liberation Mono:size=11"];
 pub const DMENU_FONT: &str          = "Liberation Mono;size=11";
 
-pub const NUM_COLOR: usize          = 3; // DO NOT CHANGE
-// pub const COLORS: &[&[&str; NUM_COLOR]] =
-//     [    /* foreground   background   border    */
-//          [  "#ffffff",   "#000000",   "#000000"  ],
-//          // TODO add further elements... 
-//     ];
+// pub const NUM_COLOR: usize          = 3; // DO NOT CHANGE
 
+// Bar Colours 
+pub const BAR_BGCOL: &str           = "#000044"; 
+pub const BAR_FGCOL: &str           = "#ffffff";
+
+// Tags 
 pub const TAGS: &[&str] = &[ "1", "2", "3", "4", "5", "6", "7", "8", "9", ];
 
 // Keybindings.
