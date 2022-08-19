@@ -932,6 +932,8 @@ killclient(const Arg *arg)
 	}
 }
 
+// Takes a window and window attributes. Creates a client for these, and puts 
+// it into the list of clients. This will be WindowManager::manage() I think. 
 void
 manage(Window w, XWindowAttributes *wa)
 {
@@ -1308,6 +1310,12 @@ run(void)
 			handler[ev.type](&ev); /* call handler */
 }
 
+// Scans X server for all windows, and if one found checks if has override_redirect 
+// (i.e. is root?) or XGetTransientForHint if so continues, else if IsViewable 
+// or getstate returns IconicState, then manages the window. 
+// Then does the transients and manages those. 
+// So I will need this. This is probably a free form function, or under 
+// WindowManager::scan perhaps. 
 void
 scan(void)
 {

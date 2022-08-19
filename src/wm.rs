@@ -1,9 +1,7 @@
-use log::{trace, debug};
-
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::rust_connection::RustConnection;
-use x11rb::protocol::xproto::{get_keyboard_mapping, KeyButMask};
+use x11rb::protocol::xproto::{get_keyboard_mapping, KeyButMask, Window, GetWindowAttributesReply};
 
 use crate::config;
 use crate::monitor::Monitor;
@@ -59,6 +57,18 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
             monitors,
             current_mon,
         }
+    }
+
+    /// TODO: implement. 
+    pub fn manage(&mut self, window: Window, wa: GetWindowAttributesReply) {
+        todo!()
+    }
+
+    /// Scans the X server for windows. If a window is found that is not 
+    /// managed, i.e. not present as a client in ferrwm, then calls 
+    /// WindowManager::manage to manage this client. 
+    pub fn scan(&mut self) {
+        todo!()
     }
 
     pub fn quit(&mut self) {

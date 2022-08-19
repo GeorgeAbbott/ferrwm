@@ -2,7 +2,7 @@ use crate::client::Client;
 
 pub struct Tag<'c> {
     display: &'static str,
-    clients: Vec<&'c Client>,
+    clients: Vec<&'c Client<'c>>,
 }
 
 impl<'c> Tag<'c> {
