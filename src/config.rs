@@ -27,7 +27,7 @@ pub const BAR_FGCOL: &str           = "#ffffff";
 pub const TAGS: &[&str] = &[ "1", "2", "3", "4", "5", "6", "7", "8", "9", ];
 
 // Keybindings.
-impl<'wm, 'rc> WindowManager<'wm, 'rc> {
+impl<'rc> WindowManager<'rc> {
     pub fn act_on_keypress(&mut self, mask: KeyButMask, key: Keycode) {
         let ctrl  = KeyButMask::CONTROL;
         let shift = KeyButMask::SHIFT;

@@ -1,7 +1,7 @@
 use x11rb::connection::Connection;
 use x11rb::protocol::Event;
 use x11rb::rust_connection::RustConnection;
-use x11rb::protocol::xproto::{get_keyboard_mapping, KeyButMask, Window, GetWindowAttributesReply};
+use x11rb::protocol::xproto::{get_keyboard_mapping, KeyButMask, Window, GetWindowAttributesReply, Screen};
 
 use crate::config;
 use crate::monitor::Monitor;
@@ -25,18 +25,18 @@ use x11rb::protocol::
 // Vec<&'c Client> allow the window manager to 
 // decide which clients to draw based on the selected
 // tags.
-pub struct WindowManager<'wm, 'rc> {
+pub struct WindowManager<'rc> {
     conn: &'rc RustConnection,
     screen_num: usize,
     // tags: Vec<Tag<'wm>>, // This should be kept afaict, but ctbwwgt.
     running: bool,
-    monitors: Vec<Monitor<'wm>>,
+    monitors: Vec<Monitor<'rc>>,
     current_mon: usize,
 }
 
-impl<'wm, 'rc> WindowManager<'wm, 'rc> {
-    pub fn new(conn: &'rc RustConnection, screen_num: usize) -> Self {
-        logf(format!("WindowManager::new -> screen_num: {}", screen_num).as_str());
+impl<'rc> WindowManager<'rc> {
+    pub fn new(conn: &'rc RustConnection, screen: &'rc Screen, screen_num: usize) -> Self {
+        logf(format!("WindowManager::new called").as_str());
 
         let mut tags = Vec::<Tag>::new();
         for tag in config::TAGS {
@@ -44,7 +44,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
         }
 
         let mut monitors = Vec::<Monitor>::new();
-        monitors.push(Monitor::new(conn, screen_num));
+        monitors.push(Monitor::new(conn, &screen));
         let current_mon = 0;
         // TODO: populate with monitors
 
@@ -172,7 +172,7 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 }
 
 // impl block for all event handling functions
-impl<'wm, 'rc> WindowManager<'wm, 'rc> {
+impl<'rc> WindowManager<'rc> {
     pub fn button_press(&self, event: ButtonPressEvent) {}
     pub fn client_message(&self, event: ClientMessageEvent) {}
     pub fn configure_request(&self, event: ConfigureRequestEvent) {}

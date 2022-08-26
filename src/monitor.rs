@@ -25,7 +25,7 @@ pub struct Monitor<'rc> {
 }
 
 impl<'rc> Monitor<'rc> {
-    pub fn new(conn: &'rc RustConnection, screen: &Screen) -> Self {
+    pub fn new(conn: &'rc RustConnection, screen: &'rc Screen) -> Self {
         let id = 0; // Only generated if with Xinerama I think? 
         let bar = Bar::new(conn, screen);
         let tags = Tags::new();
@@ -50,9 +50,13 @@ impl<'rc> Monitor<'rc> {
 
     /// Draw the status bar. For my future self, this should be here as it 
     /// needs access to monitor's Vec of Clients. 
-    pub fn draw_bar(&self) { todo!(); }
+    pub fn draw_bar(&self) {
+        self.bar.draw();
+    }
 
-    pub fn add_client(&mut self, c: Client) {
+    // Is this lifetime actually right? For now just added to get rid of error
+    // but feel like this client should not outlive 'rc. 
+    pub fn add_client(&mut self, c: Client<'rc>) {
         self.clients.push(c);
     }
 

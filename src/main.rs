@@ -65,7 +65,7 @@ fn setup(conn: &RustConnection, screen_num: usize) {
         die!("Failed with error {}", err.to_string());
     }
 
-    let mut wm = WindowManager::new(conn, screen_num);
+    let mut wm = WindowManager::new(conn, screen, screen_num);
     wm.run_event_loop();
 }
 

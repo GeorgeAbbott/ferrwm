@@ -11,12 +11,12 @@ pub struct Client<'rc> {
     old_dimensions: Rect,
     tags: Tags,
     urgent: bool,
-    window: Window, // TODO: add 
+    // window: Window, // TODO: add; this should be root? Or maybe it's the actual window, TODO remember
     // ... TODO: add
 }
 
 impl<'rc> Client<'rc> {
-    pub fn new(conn: &RustConnection, name: String) -> Self {
+    pub fn new(conn: &'rc RustConnection, name: String) -> Self {
         Self {
             conn,
             name,
@@ -49,12 +49,12 @@ impl<'rc> Client<'rc> {
 
     /// Set state. ATM a carbon-copy of C implementation, TODO verify. 
     pub fn set_state(&mut self, state: i64) { 
-            change_property(self.conn, PropMode::REPLACE, self.window, 
-                            1, // [[wmatom[WMState]]], // what is in C, TODO: make into Rust
-                            1, // [[wmatom[WMState]]], 
-                            32, // Not quite sure why, seems a bit magic
-                            2, // length of data
-                            &[state, x11rb::NONE]);
+            // change_property(self.conn, PropMode::REPLACE, self.window, 
+            //                 1, // [[wmatom[WMState]]], // what is in C, TODO: make into Rust
+            //                 1, // [[wmatom[WMState]]], 
+            //                 32, // Not quite sure why, seems a bit magic
+            //                 2, // length of data
+            //                 &[state, x11rb::NONE]);
     }
 
     /// Set whether window urgent or not. 
