@@ -78,20 +78,20 @@ impl<'wm, 'rc> WindowManager<'wm, 'rc> {
 
     fn handle_event(&mut self, event: Event) {
         match event {
-            Event::ButtonPress(e) => self.button_press(e),
-            Event::ClientMessage(e) => self.client_message(e),
+            Event::ButtonPress(e)      => self.button_press(e),
+            Event::ClientMessage(e)    => self.client_message(e),
             Event::ConfigureRequest(e) => self.configure_request(e),
-            Event::ConfigureNotify(e) => self.configure_notify(e),
-            Event::DestroyNotify(e) => self.destroy_notify(e),
-            Event::EnterNotify(e) => self.enter_notify(e),
-            Event::Expose(e) => self.expose(e),
-            Event::FocusIn(e) => self.focus_in(e),
-            Event::KeyPress(e) => self.key_press(e),
-            Event::MappingNotify(e) => self.mapping_notify(e),
-            Event::MapRequest(e) => self.map_request(e),
-            Event::MotionNotify(e) => self.motion_notify(e),
-            Event::PropertyNotify(e) => self.property_notify(e),
-            Event::UnmapNotify(e) => self.unmap_notify(e),
+            Event::ConfigureNotify(e)  => self.configure_notify(e),
+            Event::DestroyNotify(e)    => self.destroy_notify(e),
+            Event::EnterNotify(e)      => self.enter_notify(e),
+            Event::Expose(e)           => self.expose(e),
+            Event::FocusIn(e)          => self.focus_in(e),
+            Event::KeyPress(e)         => self.key_press(e),
+            Event::MappingNotify(e)    => self.mapping_notify(e),
+            Event::MapRequest(e)       => self.map_request(e),
+            Event::MotionNotify(e)     => self.motion_notify(e),
+            Event::PropertyNotify(e)   => self.property_notify(e),
+            Event::UnmapNotify(e)      => self.unmap_notify(e),
             _ => {}, // do nothing 
         };
     }
